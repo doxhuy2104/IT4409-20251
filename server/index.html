@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Authentication Test</title>
+		<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+		<style>
+			body {
+				font-family: Arial, sans-serif;
+				max-width: 600px;
+				margin: 0 auto;
+				padding: 20px;
+			}
+			.container {
+				border: 1px solid #ddd;
+				border-radius: 5px;
+				padding: 20px;
+				margin-bottom: 20px;
+			}
+			h1,
+			h2 {
+				color: #333;
+			}
+			input {
+				display: block;
+				width: 100%;
+				padding: 8px;
+				margin-bottom: 10px;
+				border: 1px solid #ddd;
+				border-radius: 4px;
+			}
+			button {
+				background-color: #4caf50;
+				color: white;
+				padding: 10px 15px;
+				border: none;
+				border-radius: 4px;
+				cursor: pointer;
+				margin-right: 10px;
+				margin-bottom: 10px;
+			}
+			button:hover {
+				background-color: #45a049;
+			}
+			#result {
+				margin-top: 20px;
+				padding: 15px;
+				border: 1px solid #ddd;
+				border-radius: 4px;
+				background-color: #f9f9f9;
+				min-height: 100px;
+				white-space: pre-wrap;
+			}
+			.token-display {
+				overflow-wrap: break-word;
+				word-wrap: break-word;
+				word-break: break-all;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>Authentication Test Page</h1>
+
+		<div class="container">
+			<h2>Customer Login</h2>
+			<input
+				type="email"
+				id="email"
+				placeholder="Email"
+				value="Canhhuy2004@gmail.com"
+			/>
+			<input
+				type="password"
+				id="password"
+				placeholder="Password"
+				value="123456"
+			/>
+			<button onclick="login()">Login</button>
+		</div>
+
+		<div class="container">
+			<h2>Token Operations</h2>
+			<button onclick="refreshToken()">Refresh Token</button>
+			<button onclick="logout()">Logout</button>
+		</div>
+
+		<div class="container">
+			<h2>Current Token</h2>
+			<div class="token-display" id="currentToken">No token</div>
+		</div>
+
+		<div class="container">
+			<h2>Result</h2>
+			<div id="result">Results will appear here...</div>
+		</div>
+
+		<script>
+			let accessToken = null;
+			const API_BASE_URL = 'http://localhost:3005/api/auth'; // Change this to your API URL
+
+			// Cấu hình axios
+			const api = axios.create({
+				baseURL: API_BASE_URL,
+				withCredentials: true, // Quan trọng để xử lý cookies
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			});
+
+			// Update the UI to show the current token
+			function updateTokenDisplay() {
+				const tokenEl = document.getElementById('currentToken');
+				tokenEl.textContent = accessToken || 'No token';
+			}
+
+			// Display results in the result div
+			function showResult(title, data) {
+				const resultEl = document.getElementById('result');
+				let content = `=== ${title} ===\n`;
+
+				if (typeof data === 'object') {
+					content += JSON.stringify(data, null, 2);
+				} else {
+					content += data;
+				}
+
+				resultEl.textContent = content;
+				console.log(title, data);
+			}
+
+			// Customer Login
+			async function login() {
+				const email = document.getElementById('email').value;
+				const password = document.getElementById('password').value;
+
+				try {
+					const response = await api.post(
+						'/customers/login',
+						{
+							email,
+							password,
+						},
+						{
+							withCredentials: true,
+						},
+					);
+
+					accessToken = response.data.data.accessToken;
+					updateTokenDisplay();
+					showResult('Login Success', {
+						accessToken,
+						message: 'Login successful',
+					});
+				} catch (error) {
+					showResult(
+						'Login Error',
+						error.response?.data || error.message,
+					);
+				}
+			}
+
+			// Refresh Token
+			async function refreshToken() {
+				try {
+					// Hiển thị các cookie hiện có
+					showResult(
+						'Cookies hiện tại (trước khi refresh)',
+						document.cookie || 'Không có cookie nào',
+					);
+
+					console.log('Calling refresh token API...');
+
+					const response = await api.get('/customers/refresh-token', {
+						withCredentials: true,
+					});
+
+					console.log('Response status:', response.status);
+					console.log('Response data:', response.data);
+
+					if (response.status === 200) {
+						accessToken = response.data.data.accessToken;
+						updateTokenDisplay();
+						showResult('Token Refresh Success', {
+							accessToken,
+							message: 'Token refreshed successfully',
+							cookies: document.cookie || 'Không có cookie nào',
+						});
+					}
+				} catch (error) {
+					console.error('Refresh token error:', error);
+					showResult('Token Refresh Error', {
+						errorMessage: error.message,
+						response: error.response?.data,
+						cookies: document.cookie || 'Không có cookie nào',
+					});
+				}
+			}
+
+			// Logout
+			async function logout() {
+				try {
+					const response = await api.post('/logout');
+
+					if (response.status === 200) {
+						accessToken = null;
+						updateTokenDisplay();
+						showResult('Logout Success', {
+							message: 'Logged out successfully',
+						});
+					}
+				} catch (error) {
+					showResult(
+						'Logout Error',
+						error.response?.data || error.message,
+					);
+				}
+			}
+
+			// Initialize the token display
+			updateTokenDisplay();
+		</script>
+	</body>
+</html>

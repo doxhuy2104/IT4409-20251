@@ -1,0 +1,22 @@
+{
+	"compilerOptions": {
+		"experimentalDecorators": true,
+		"target": "es2016",
+		"module": "commonjs" ,
+		"rootDir": "./" ,
+		"moduleResolution": "node" ,
+		"baseUrl": "./" ,
+		"typeRoots": [
+			"./node_modules/@types", "./src/types"
+		] ,
+		"resolveJsonModule": true ,
+		"sourceMap": true ,
+		"outDir": "./dist" ,
+		"esModuleInterop": true ,
+		"forceConsistentCasingInFileNames": true ,
+		"strict": true ,
+		"noImplicitThis": true ,
+		"alwaysStrict": true,
+		"skipLibCheck": true,
+	}
+}
