@@ -3,7 +3,7 @@ import Home from "../pages/HomePage";
 import NotFound from "../pages/NotFound";
 import CategoryPage from "../pages/CategoryPage";
 import Login from "../pages/auth/Login";
-import Register from "../pages/auth/Register";
+import Register from "../pages/auth/Register.tsx";
 import GoogleCallback from "../pages/auth/GoogleCallback";
 import ForgotPassword from "../pages/auth/ForgotPassword";
 import ResetPassword from "../pages/auth/ResetPassword";
