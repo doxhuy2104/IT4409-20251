@@ -276,7 +276,7 @@ const Register: React.FC = () => {
 
         <div className="mt-6 text-sm text-center text-gray-600">
           Đã có tài khoản?{' '}
-          <Link to="" className="text-green-600 font-medium hover:text-green-700">
+          <Link to="/auth/login" className="text-green-600 font-medium hover:text-green-700">
             Đăng nhập ngay
           </Link>
         </div>
