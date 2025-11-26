@@ -8,6 +8,7 @@ import { Carts } from '../models/carts.model';
 import { CartItems } from '../models/cart-items.model';
 import { Orders } from '../models/orders.model';
 import { OrderItems } from '../models/order-items.model';
+import { Admins } from 'src/models/admins.model';
 
 const dbConfig = env.database;
 
@@ -64,6 +65,7 @@ const connectToDatabase = async () => {
 };
 
 // Khởi tạo tất cả các model
+Admins.initClass(sequelize);
 Categories.initClass(sequelize);
 Products.initClass(sequelize);
 Customers.initClass(sequelize);
@@ -100,6 +102,7 @@ Orders.hasMany(OrderItems, { foreignKey: 'orderId' });
 // Xuất các model và kết nối
 export const db = {
 	sequelize: sequelize,
+	admins: Admins,
 	categories: Categories,
 	products: Products,
 	customers: Customers,
