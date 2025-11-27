@@ -24,9 +24,14 @@ const sslConfig = isProduction
 	}
 	: {};
 
-const sequelize = dbConfig.url
-	? new Sequelize(dbConfig.url, {
+const sequelize = new Sequelize(
+	dbConfig.name,
+	dbConfig.username,
+	dbConfig.password,
+	{
+		host: dbConfig.host,
 		dialect: dbConfig.dialect as Dialect,
+		port: dbConfig.port,
 		pool: {
 			max: dbConfig.max,
 			min: dbConfig.min,
@@ -34,26 +39,8 @@ const sequelize = dbConfig.url
 			idle: dbConfig.idle,
 		},
 		logging: dbConfig.logging,
-		...sslConfig,
-	})
-	: new Sequelize(
-		dbConfig.name,
-		dbConfig.username,
-		dbConfig.password,
-		{
-			host: dbConfig.host,
-			dialect: dbConfig.dialect as Dialect,
-			port: dbConfig.port,
-			pool: {
-				max: dbConfig.max,
-				min: dbConfig.min,
-				acquire: dbConfig.acquire,
-				idle: dbConfig.idle,
-			},
-			logging: dbConfig.logging,
-			...sslConfig,
-		},
-	);
+	},
+);
 
 const connectToDatabase = async () => {
 	try {

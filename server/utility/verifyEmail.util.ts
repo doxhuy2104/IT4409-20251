@@ -1,4 +1,4 @@
-import env from '../../env';
+import env from '../env';
 
 export const verifyEmail = (token: string, email: string) => {
 	const generateUrl = `${env.app.base_url}/api/auth/verify?token=${token}&email=${email}`;
