@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt, { JwtPayload } from 'jsonwebtoken';
-import { PERMISSION_ERROR } from '../constants/errorConstant';
-import { AppError } from '../../utility/appError.util';
+import { PERMISSION_ERROR } from '../constants/error.constant';
+import { AppError } from '../../utility/app.error.util';
 
 export enum RoleManager {
 	super_admin = 'super_admin',

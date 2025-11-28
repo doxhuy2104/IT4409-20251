@@ -1,8 +1,8 @@
 import { JSONSchemaType } from 'ajv';
 import { ajv } from '../validators';
 import * as express from 'express';
-import { BAD_REQUEST, SYSTEM_ERROR } from '../constants/errorConstant';
-import { AppError } from '../../utility/appError.util';
+import { BAD_REQUEST, SYSTEM_ERROR } from '../constants/error.constant';
+import { AppError } from '../../utility/app.error.util';
 
 export function validateBody<T>(schema: JSONSchemaType<T>) {
 	return (

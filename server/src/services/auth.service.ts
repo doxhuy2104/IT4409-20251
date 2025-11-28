@@ -1,12 +1,12 @@
 import jwt from 'jsonwebtoken';
 import env from '../../env';
-import { CONFLICT_ERROR } from '../constants/errorConstant';
+import { CONFLICT_ERROR } from '../constants/error.constant';
 import { db } from '../loaders/database.loader';
 import { Customers } from '../models/customers.model';
-import { AppError } from '../../utility/appError.util';
-import { encryptUtil } from '../../utility/encryptPassword.util';
+import { AppError } from '../../utility/app.error.util';
+import { encryptUtil } from '../../utility/encrypt.password.util';
 import { sendMail } from '../../utility/mail.util';
-import { verifyEmail } from '../../utility/verifyEmail.util';
+import { verifyEmail } from '../../utility/verify.email.util';
 import { Admins } from '../models/admins.model';
 import { Op } from 'sequelize';
 

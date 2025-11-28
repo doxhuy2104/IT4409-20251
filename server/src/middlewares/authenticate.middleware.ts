@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import { BAD_REQUEST, PERMISSION_ERROR } from '../constants/errorConstant';
-import { AppError } from '../../utility/appError.util';
+import { BAD_REQUEST, PERMISSION_ERROR } from '../constants/error.constant';
+import { AppError } from '../../utility/app.error.util';
 import env from '../../env';
 import { db } from '../loaders/database.loader';
 import { Customers } from '../models/customers.model';
