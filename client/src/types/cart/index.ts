@@ -1,25 +1,13 @@
-import { ProductVariant } from "../product";
+import { Product } from "../product";
 
 export interface CartItem {
-    id: string;
-    productId: string;
-    name: string;
-    image: string;
-    price: number;
-    originalPrice: number;
-    quantity: number;
-    stock: number;
-    specifications: string;
-}
-
-export interface CartItemV2 {
     id: number;
     cartId: number;
-    variantId: number;
+    productId: number;
     quantity: number;
     createdAt: string;
     updatedAt: string;
-    productVariant?: ProductVariant;
+    product: Product;
 }
 
 export interface Cart {
@@ -28,11 +16,7 @@ export interface Cart {
     sessionId: string | null;
     createdAt: string;
     updatedAt: string;
-    cartItems: CartItemV2[];
-}
-
-export interface CartResponse {
-    cart: Cart;
+    cartItems: CartItem[];
 }
 
 export interface RecommendedProduct {
@@ -42,4 +26,8 @@ export interface RecommendedProduct {
     price: number;
     originalPrice: number;
     discount: number;
+}
+
+export interface CartResponse {
+    cart: Cart;
 }

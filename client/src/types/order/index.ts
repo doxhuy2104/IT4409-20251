@@ -1,3 +1,5 @@
+import { Product } from "../product";
+
 export interface Order {
     id: number;
     customerId: number;
@@ -16,26 +18,14 @@ export type OrderStatus = 'pending' | 'processing' | 'shipped' | 'delivered' | '
 export interface OrderItem {
     id: number;
     orderId: number;
-    variantId: number;
+    productId: number;
     quantity: number;
     priceAtTime: string;
     createdAt: string;
     updatedAt: string;
-    productVariant?: ProductVariant;
+    product?: Product;
 }
 
-interface ProductVariant {
-    id: number;
-    name: string;
-    productId: number;
-    slug: string;
-    sku: string;
-    price: string;
-    discountPrice: string | null;
-    stock: number;
-    createdAt: string;
-    updatedAt: string;
-}
 
 export interface Payment {
     id: number;

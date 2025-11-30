@@ -4,6 +4,9 @@ import { ChevronDown, Map, Search, ShoppingCart, User, X, Bell, Menu, LogOut, He
 // import cartService from '../services/cart.service';
 // import productService from '../services/product.service';
 import { mainCategories } from '../data/category';
+import type { CartItem } from '../types/cart';
+import useAuth from '../hooks/useAuth';
+import cartService from '../services/cart.service';
 // suggestions type
 interface SuggestionProduct {
   id: number;
@@ -20,13 +23,16 @@ interface SuggestionProduct {
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
+  const { isAuthenticated} = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [suggestedProducts, setSuggestedProducts] = useState<SuggestionProduct[]>([]);
-  const [showUserDropdown, setShowUserDropdown] = useState(false);
-  const [cartItemCount, setCartItemCount] = useState<number>(0);
   const searchContainerRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLElement>(null);
+  const [suggestedProducts, setSuggestedProducts] = useState<SuggestionProduct[]>([]);
+  const cartDropdownRef = useRef<HTMLDivElement>(null);
+  const [cartItemCount, setCartItemCount] = useState<number>(0);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [cartTotal, setCartTotal] = useState<number>(0);
 
   useEffect(() => {
     // Handle scroll for header shadow
@@ -81,6 +87,51 @@ const Header: React.FC = () => {
       setShowSuggestions(true);
     }
   };
+
+  useEffect(() => {
+    const fetchCartItems = async () => {
+      if (isAuthenticated) {
+        try {
+          const cartResponse = await cartService.getCart();
+          if (cartResponse && cartResponse.cart) {
+            const items = cartResponse.cart.cartItems || [];
+            const totalItems = items.reduce(
+              (sum: number, item: CartItem) => sum + item.quantity,
+              0
+            );
+            setCartItemCount(totalItems);
+            setCartItems(items);
+
+            // Calculate total price
+            const total = items.reduce((sum: number, item: CartItem) => {
+              if (item.product) {
+                const price = parseFloat(item.product.price || '0');
+                return sum + (price * item.quantity);
+              }
+              return sum;
+            }, 0);
+            setCartTotal(total);
+          }
+        } catch (error) {
+          console.error('Error fetching cart items:', error);
+          setCartItemCount(0);
+          setCartItems([]);
+          setCartTotal(0);
+        }
+      } else {
+        setCartItemCount(0);
+        setCartItems([]);
+        setCartTotal(0);
+      }
+    };
+
+    fetchCartItems();
+
+    // Refresh cart when dropdown is shown
+    if (showCartDropdown) {
+      fetchCartItems();
+    }
+  }, [isAuthenticated, showCartDropdown]);
 
 
   return (
@@ -138,7 +189,84 @@ const Header: React.FC = () => {
                   <Search size={18} />
                 </button>
               </form>
+{/* Search suggestions dropdown */}
+{showSuggestions && (
+                <div className="absolute top-full left-0 w-full bg-white rounded-lg shadow-xl overflow-hidden mt-2 z-50 border border-gray-100 animate-fadeDown">
+                  {/* Suggested text - "Có phải bạn muốn tìm" */}
+                  {/* <div className="p-3 text-sm text-gray-500 border-b bg-gray-50">
+                    <span className="font-medium">Có phải bạn muốn tìm</span>
+                  </div> */}
 
+                  {/* Special link for brand page - shown when searching Samsung */}
+                  {/* {searchQuery.toLowerCase().includes('samsung') && (
+                    <Link
+                      to="/thuong-hieu/samsung"
+                      className="flex items-center bg-gradient-to-r from-green-600 to-emerald-600 p-3 hover:opacity-95 transition-opacity"
+                    >
+                      <div className="bg-white rounded-full p-2 mr-2 shadow-sm">
+                        <span className="text-xs font-bold">SAMSUNG</span>
+                      </div>
+                      <span className="text-white">Chuyên trang Samsung</span>
+                      <span className="ml-auto bg-white/20 rounded-full px-2 py-0.5 text-xs text-white">Xem ngay</span>
+                    </Link>
+                  )}                   */}
+                  {/* Category suggestions */}
+                  {/* {suggestedCategories.map((category, index) => (
+                    <Link
+                      key={index}
+                      to={`/search?query=${encodeURIComponent(category)}`}
+                      className="block px-4 py-2.5 hover:bg-gray-50 text-green-600 transition-colors"
+                      onClick={() => setShowSuggestions(false)}
+                    >
+                      <div className="flex items-center">
+                        <Search size={14} className="mr-2 text-gray-400" />
+                        <span>{category}</span>
+                      </div>
+                    </Link>
+                  ))} */}
+
+                  {/* Suggested products section */}
+                  {suggestedProducts.length > 0 && (
+                    <div className="border-t">
+                      <h3 className="px-4 py-2.5 text-gray-500 text-sm font-medium bg-gray-50">Sản phẩm gợi ý</h3>
+                      {suggestedProducts.map((product) => (
+                        <Link
+                          key={product.id}
+                          to={`/product/${product.slug}`}
+                          className="flex p-3 hover:bg-gray-50 border-b transition-colors"
+                          onClick={() => setShowSuggestions(false)}
+                        >
+                          <div className="w-12 h-12 flex-shrink-0 bg-gray-100 p-1 rounded-md overflow-hidden">
+                            <img
+                              src={product.image}
+                              alt={product.name}
+                              className="w-full h-full object-contain"
+                            />
+                          </div>
+                          <div className="ml-3 flex-grow">
+                            <p className="text-sm line-clamp-1 text-gray-800">{product.name}</p>
+                            <div className="flex items-center mt-0.5">
+                              <span className="text-green-600 font-medium text-sm">
+                                {formatCurrency(product.price)}
+                              </span>
+                              {product.originalPrice && product.discountPercentage && (
+                                <div className="flex items-center ml-2">
+                                  <span className="text-gray-500 text-xs line-through">
+                                    {formatCurrency(product.originalPrice)}
+                                  </span>
+                                  <span className="text-xs text-white ml-1 bg-green-500 rounded px-1">
+                                    -{product.discountPercentage}%
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
 
             </div>
 
