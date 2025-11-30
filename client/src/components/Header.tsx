@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ChevronDown, Map, Search, ShoppingCart, User, X, Bell, Menu, LogOut, Heart, ShoppingBag } from 'lucide-react';
+import { ChevronDown, Map, Search, ShoppingCart, User, X, Bell, Menu, LogOut, Heart, ShoppingBag, Trash2 } from 'lucide-react';
 // import cartService from '../services/cart.service';
 // import productService from '../services/product.service';
 import { mainCategories } from '../data/category';
@@ -23,7 +23,7 @@ interface SuggestionProduct {
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
-  const { isAuthenticated} = useAuth();
+  const { isAuthenticated } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
   const searchContainerRef = useRef<HTMLDivElement>(null);
@@ -33,6 +33,7 @@ const Header: React.FC = () => {
   const [cartItemCount, setCartItemCount] = useState<number>(0);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [cartTotal, setCartTotal] = useState<number>(0);
+  const [showCartDropdown, setShowCartDropdown] = useState(false);
 
   useEffect(() => {
     // Handle scroll for header shadow
@@ -85,6 +86,36 @@ const Header: React.FC = () => {
   const handleSearchInputFocus = () => {
     if (searchQuery.length > 0) {
       setShowSuggestions(true);
+    }
+  };
+
+  const handleRemoveCartItem = async (cartItemId: number) => {
+    if (!isAuthenticated) return;
+
+    try {
+      await cartService.removeCartItem(cartItemId);
+      // Refresh cart items
+      const cartResponse = await cartService.getCart();
+      if (cartResponse && cartResponse.cart) {
+        const items = cartResponse.cart.cartItems || [];
+        const totalItems = items.reduce(
+          (sum: number, item: CartItem) => sum + item.quantity,
+          0
+        );
+        setCartItemCount(totalItems);
+        setCartItems(items);
+
+        const total = items.reduce((sum: number, item: CartItem) => {
+          if (item.product) {
+            const price = parseFloat(item.product.price || '0');
+            return sum + (price * item.quantity);
+          }
+          return sum;
+        }, 0);
+        setCartTotal(total);
+      }
+    } catch (error) {
+      console.error('Error removing cart item:', error);
     }
   };
 
@@ -189,8 +220,8 @@ const Header: React.FC = () => {
                   <Search size={18} />
                 </button>
               </form>
-{/* Search suggestions dropdown */}
-{showSuggestions && (
+              {/* Search suggestions dropdown */}
+              {showSuggestions && (
                 <div className="absolute top-full left-0 w-full bg-white rounded-lg shadow-xl overflow-hidden mt-2 z-50 border border-gray-100 animate-fadeDown">
                   {/* Suggested text - "Có phải bạn muốn tìm" */}
                   {/* <div className="p-3 text-sm text-gray-500 border-b bg-gray-50">
@@ -284,19 +315,172 @@ const Header: React.FC = () => {
                   </div>
                 </Link>
               )}
-
               {/* Cart */}
-              <Link to="/cart" className="flex items-center text-white hover:opacity-80 group relative">
-                <div className="bg-white/20 rounded-full p-2 mr-1 md:mr-2 group-hover:bg-white/30 transition-all relative">
-                  <ShoppingCart size={18} className="text-white" />
-                  {cartItemCount > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold rounded-full min-w-[16px] h-4 flex items-center justify-center px-1 border border-white/30 shadow-sm">
-                      {cartItemCount > 99 ? '99+' : cartItemCount}
-                    </span>
-                  )}
-                </div>
-                <span className="hidden md:inline text-sm">Giỏ hàng</span>
-              </Link>
+              <div
+                className="relative"
+                ref={cartDropdownRef}
+                onMouseEnter={() => setShowCartDropdown(true)}
+                onMouseLeave={() => setShowCartDropdown(false)}
+              >
+                <Link
+                  to="/cart"
+                  className="flex items-center text-white hover:opacity-80 group relative"
+                >
+                  <div className="bg-white/20 rounded-full p-2 mr-1 md:mr-2 group-hover:bg-white/30 transition-all relative">
+                    <ShoppingCart size={18} className="text-white" />
+                    {cartItemCount > 0 && (
+                      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold rounded-full min-w-[16px] h-4 flex items-center justify-center px-1 border border-white/30 shadow-sm">
+                        {cartItemCount > 99 ? '99+' : cartItemCount}
+                      </span>
+                    )}
+                  </div>
+                  <span className="hidden md:inline text-sm">Giỏ hàng</span>
+                </Link>
+                {/* Cart Dropdown */}
+                {showCartDropdown && (
+                  <>
+                    {/* Invisible bridge để đảm bảo dropdown không bị đóng khi di chuột từ button sang dropdown */}
+                    <div
+                      className="absolute right-0 top-full"
+                      style={{
+                        width: '384px', // w-96 = 384px
+                        height: '16px',
+                        pointerEvents: 'auto',
+                        zIndex: 51
+                      }}
+                    ></div>
+
+                    <div
+                      className="absolute right-0 top-full w-96 bg-white rounded-xl shadow-xl z-50 animate-fadeDown border border-gray-100 overflow-hidden"
+                      style={{ marginTop: '8px' }}
+                    >
+                      {/* Header */}
+                      <div className="px-5 py-3 bg-gradient-to-r from-green-50 to-emerald-50 border-b">
+                        <div className="flex items-center justify-between">
+                          <h3 className="font-semibold text-gray-800">Giỏ hàng của bạn</h3>
+                          <span className="text-sm text-gray-500">{cartItemCount} sản phẩm</span>
+                        </div>
+                      </div>
+
+                      {/* Cart Items */}
+                      <div className="max-h-96 overflow-y-auto modern-scrollbar">
+                        {!isAuthenticated ? (
+                          <div className="p-8 text-center">
+                            <ShoppingCart size={48} className="mx-auto text-gray-300 mb-3" />
+                            <p className="text-gray-600 text-sm font-medium mb-2">Vui lòng đăng nhập</p>
+                            <p className="text-gray-500 text-xs mb-4">Đăng nhập để xem giỏ hàng của bạn</p>
+                            <Link
+                              to="/auth/login"
+                              className="inline-block bg-green-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700 transition-colors"
+                              onClick={() => setShowCartDropdown(false)}
+                            >
+                              Đăng nhập ngay
+                            </Link>
+                          </div>
+                        ) : cartItems.length === 0 ? (
+                          <div className="p-8 text-center">
+                            <ShoppingCart size={48} className="mx-auto text-gray-300 mb-3" />
+                            <p className="text-gray-500 text-sm">Giỏ hàng của bạn đang trống</p>
+                            <Link
+                              to="/"
+                              className="mt-4 inline-block bg-green-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700 transition-colors"
+                              onClick={() => setShowCartDropdown(false)}
+                            >
+                              Mua sắm ngay
+                            </Link>
+                          </div>
+                        ) : (
+                          <>
+                            {cartItems.map((item) => {
+                              const productImage = item.product?.productImages?.length > 0
+                                ? item.product.productImages.find(img => img.isPrimary)?.imageUrl || item.product.productImages[0].imageUrl
+                                : '';
+                              const productPrice = parseFloat(item.product?.price || '0');
+
+                              return (
+                                <div
+                                  key={item.id}
+                                  className="flex items-center p-4 border-b hover:bg-gray-50 transition-colors"
+                                >
+                                  <Link
+                                    to={`/product/${item.product?.slug || ''}`}
+                                    className="flex-shrink-0 w-16 h-16 bg-gray-100 rounded-md overflow-hidden mr-3"
+                                    onClick={() => setShowCartDropdown(false)}
+                                  >
+                                    {productImage ? (
+                                      <img
+                                        src={productImage}
+                                        alt={item.product?.name || ''}
+                                        className="w-full h-full object-cover"
+                                      />
+                                    ) : (
+                                      <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
+                                        No img
+                                      </div>
+                                    )}
+                                  </Link>
+
+                                  <div className="flex-grow min-w-0">
+                                    <Link
+                                      to={`/product/${item.product?.slug || ''}`}
+                                      className="block"
+                                      onClick={() => setShowCartDropdown(false)}
+                                    >
+                                      <p className="text-sm font-medium text-gray-800 truncate">
+                                        {item.product?.name || 'Sản phẩm'}
+                                      </p>
+                                    </Link>
+                                    <div className="flex items-center justify-between mt-1">
+                                      <span className="text-sm text-green-600 font-medium">
+                                        {formatCurrency(productPrice)} × {item.quantity}
+                                      </span>
+                                      <button
+                                        onClick={() => handleRemoveCartItem(item.id)}
+                                        className="text-gray-400 hover:text-red-500 transition-colors p-1"
+                                        title="Xóa sản phẩm"
+                                      >
+                                        <Trash2 size={16} />
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </>
+                        )}
+                      </div>
+
+                      {/* Footer */}
+                      {cartItems.length > 0 && (
+                        <div className="border-t bg-gray-50">
+                          <div className="px-5 py-3 flex items-center justify-between">
+                            <span className="text-sm text-gray-600">Tổng tiền:</span>
+                            <span className="text-lg font-bold text-green-600">
+                              {formatCurrency(cartTotal)}
+                            </span>
+                          </div>
+                          <div className="px-5 pb-4 flex gap-2">
+                            <Link
+                              to="/cart"
+                              className="flex-1 bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors text-center"
+                              onClick={() => setShowCartDropdown(false)}
+                            >
+                              Xem giỏ hàng
+                            </Link>
+                            <Link
+                              to="/cart"
+                              className="flex-1 bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-700 transition-colors text-center"
+                              onClick={() => setShowCartDropdown(false)}
+                            >
+                              Thanh toán
+                            </Link>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </>
+                )}
+              </div>
 
             </div>
           </div>
