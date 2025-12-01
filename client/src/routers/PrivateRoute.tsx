@@ -5,7 +5,6 @@ import { useAuth } from '../hooks/useAuth';
 const PrivateRoute: React.FC = () => {
   const { isAuthenticated, isLoading } = useAuth();
 
-  // Show loading or spinner while checking authentication status
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
