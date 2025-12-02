@@ -34,8 +34,6 @@ const Register: React.FC = () => {
   // Clear error when inputs change
   useEffect(() => {
     if (error) {
-      // Create a timer to clear the error after a delay when the user makes changes
-      // to the field that caused the error
       const timer = setTimeout(() => {
         if (
           (error.toLowerCase().includes('email') && email) ||
@@ -71,19 +69,17 @@ const Register: React.FC = () => {
     const userData = {
       fullName,
       phone,
-      email, // Email is required for verification
+      email, 
       password,
-      ...(birthDate && { birthDate }), // Include birthDate if it exists
+      ...(birthDate && { birthDate }),
     }; setIsSubmitting(true);
 
     try {
-      // Don't clear errors here to ensure errors from the backend are displayed
       const success = await register(userData);
       if (success) {
         setRegistrationSuccess(true);
         console.log('Đăng ký thành công! Vui lòng đăng nhập.');
       } else if (error) {
-        // If registration failed and there's an error, scroll to the error message
         setTimeout(() => {
           const errorElement = document.getElementById('error-message');
           if (errorElement) {
@@ -94,7 +90,6 @@ const Register: React.FC = () => {
     } catch (err) {
       console.error('Registration error:', err);
       setRegistrationSuccess(false);
-      // Error is already handled in AuthContext
     } finally {
       setIsSubmitting(false);
     }
