@@ -7,6 +7,7 @@ import { mainCategories } from '../data/category';
 import type { CartItem } from '../types/cart';
 import useAuth from '../hooks/useAuth';
 import cartService from '../services/cart.service';
+import { createSlug } from '../utils/stringUtils';
 // suggestions type
 interface SuggestionProduct {
   id: number;
@@ -63,7 +64,51 @@ const Header: React.FC = () => {
   }, []);
 
 
+  useEffect(() => {
+    const slug = createSlug(searchQuery);
 
+    if (slug.length > 0) {
+      // Use product service to fetch suggestions
+      const fetchSuggestions = async () => {
+        try {
+          const response = await productService.getProducts({
+            slug: slug,
+            limit: 5
+          });
+
+          if (response && response.data) {
+            setSuggestedProducts(response.data.map(product => {
+
+              const mainImage = product.productImages && product.productImages.length > 0
+                ? product.productImages.find(img => img.isPrimary)?.imageUrl || product.productImages[0].imageUrl
+                : '';
+              const price = parseFloat(product.price);
+
+
+
+              return {
+                id: product.id,
+                name: product.name,
+                slug: product.slug,
+                image: mainImage,
+                price: price,
+                category: product.categoryId ? product.categoryId.toString() : undefined
+              };
+            }));
+          }
+
+          setShowSuggestions(true);
+        } catch (error) {
+          console.error('Error fetching product suggestions:', error);
+          setSuggestedProducts([]);
+        }
+      };
+
+      fetchSuggestions();
+    } else {
+      setShowSuggestions(false);
+    }
+  }, [searchQuery]);
 
 
   const formatCurrency = (amount: number): string => {
