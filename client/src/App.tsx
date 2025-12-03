@@ -3,6 +3,8 @@ import Header from './components/Header';
 
 import 'react-toastify/dist/ReactToastify.css';
 import './App.css'
+import Footer from './components/Footer';
+import { ToastContainer } from 'react-toastify';
 
 
 function App() {
@@ -14,7 +16,10 @@ function App() {
         <main>
           <AppRoutes />
         </main>
-    </div>
+        <Footer />
+        <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} />
+
+      </div>
 
     </>
   )
