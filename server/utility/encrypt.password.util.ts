@@ -1,5 +1,5 @@
 import bcrypt = require('bcryptjs');
-import env from '../../env';
+import env from '../env';
 
 export class encryptUtil {
 	static async createHash(data: string): Promise<string> {
