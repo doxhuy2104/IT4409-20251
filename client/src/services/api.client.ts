@@ -13,6 +13,19 @@ class ApiClient {
             },
             withCredentials: true, // Cho phép gửi cookie trong các yêu cầu
         });
+        
+        this.client.interceptors.request.use(
+            (config) => {
+                const token = localStorage.getItem('accessToken');
+                if (token) {
+                    config.headers['Authorization'] = `Bearer ${token}`;
+                }
+                return config;
+            },
+            (error) => {
+                return Promise.reject(error);
+            }
+        );
     }    // Phương thức GET
     async get<T>(endpoint: string, config?: AxiosRequestConfig): Promise<T> {
         const response: AxiosResponse<T> = await this.client.get(endpoint, config);

@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
-import authService from '../service/authService';
+import authService from '../services/auth.service';
 import { parseJwt } from '../utils/jwt';
 export interface User {
   id: string;
