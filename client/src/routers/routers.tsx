@@ -5,7 +5,7 @@ import CategoryPage from "../pages/CategoryPage";
 import Login from "../pages/auth/Login";
 import Register from "../pages/auth/Register.tsx";
 import GoogleCallback from "../pages/auth/GoogleCallback";
-import ForgetPassword from "../pages/auth/ForgetPassword.tsx";
+import ForgotPassword from "../pages/auth/ForgotPassword";
 import ResetPassword from "../pages/auth/ResetPassword";
 import OrdersPage from "../pages/OrdersPage";
 import OrderDetailPage from "../pages/OrderDetailPage";
@@ -25,7 +25,7 @@ export default function AppRoutes() {
       {/* Authentication routes */}
       <Route path="/auth/login" element={<Login />} />
       <Route path="/auth/register" element={<Register />} />
-      <Route path="/auth/forgot-password" element={<ForgetPassword />} />
+      <Route path="/auth/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/login/success" element={<GoogleCallback />} />
 
