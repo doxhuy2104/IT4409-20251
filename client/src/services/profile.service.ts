@@ -1,9 +1,7 @@
 import apiClient from './api.client';
 import type { UserProfile } from '../types/user';
 
-/**
- * Interface cho tham số cập nhật hồ sơ người dùng
- */
+
 export interface UpdateUserProfileParams {
     fullName?: string;
     phone?: string;
