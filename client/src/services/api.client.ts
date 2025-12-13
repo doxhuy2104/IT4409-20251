@@ -13,7 +13,8 @@ class ApiClient {
             },
             withCredentials: true, // Cho phép gửi cookie trong các yêu cầu
         });
-        
+
+        // Thêm interceptor để tự động gắn token xác thực
         this.client.interceptors.request.use(
             (config) => {
                 const token = localStorage.getItem('accessToken');
@@ -23,6 +24,44 @@ class ApiClient {
                 return config;
             },
             (error) => {
+                return Promise.reject(error);
+            }
+        );
+
+        // Xử lý các phản hồi lỗi và refresh token
+        this.client.interceptors.response.use(
+            (response) => response,
+            async (error) => {
+                const originalRequest = error.config;
+                // Kiểm tra status code 401 hoặc status code 500 với message 'jwt expired'
+                if (error.response?.status === 401 ||
+                    (error.response?.status === 500 && error.response?.data?.message === 'jwt expired')) {
+
+                    // Tránh vòng lặp vô hạn nếu token refresh cũng lỗi
+                    if (originalRequest._retry) {
+                        localStorage.removeItem('accessToken');
+                        return Promise.reject(error);
+                    }
+
+                    originalRequest._retry = true;
+
+                    try {
+                        // lấy token mới
+                        const refreshResponse = await this.client.post(
+                            '/auth/refresh',
+                            {},
+                        );
+
+                        const accessToken = refreshResponse.data.accessToken;
+                        localStorage.setItem('accessToken', accessToken);
+
+                        originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
+                        return this.client(originalRequest);
+                    } catch (refreshError) {
+                        localStorage.removeItem('accessToken');
+                        return Promise.reject(refreshError);
+                    }
+                }
                 return Promise.reject(error);
             }
         );
