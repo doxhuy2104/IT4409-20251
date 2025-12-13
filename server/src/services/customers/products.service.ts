@@ -6,7 +6,6 @@ export const getProducts = async (filters: any, transaction?: Transaction) => {
 		isHidden: false,
 	};
 	const include: any[] = [
-		{ model: db.productVariants, include: [{ model: db.productImages }] },
 		{ model: db.productImages },
 		{ model: db.productPromotions, include: [{ model: db.promotions }] },
 	];
@@ -16,12 +15,19 @@ export const getProducts = async (filters: any, transaction?: Transaction) => {
 		where.id = filters.id;
 	}
 
-	// Điều kiện lọc theo tên sản phẩm
-	if (filters.name) {
-		where.name = { [Op.like]: `%${filters.name}%` };
-	}
+	// Điều kiện lọc theo slug (hỗ trợ partial match, ưu tiên hơn name)
 	if (filters.slug) {
-		where.slug = filters.slug;
+		// Tìm kiếm theo slug với partial match (hỗ trợ tìm kiếm không dấu)
+		where.slug = {
+			[Op.iLike]: `%${filters.slug}%`
+		};
+	}
+	// Điều kiện lọc theo tên sản phẩm (chỉ khi không có slug)
+	else if (filters.name) {
+		// iLike = case-insensitive LIKE, hỗ trợ Unicode tốt hơn
+		where.name = {
+			[Op.iLike]: `%${filters.name}%`
+		};
 	}
 
 	// Điều kiện lọc theo brandId
@@ -35,12 +41,12 @@ export const getProducts = async (filters: any, transaction?: Transaction) => {
 	}
 
 	// Điều kiện lọc theo khoảng giá
-	if (filters.priceRange.min || filters.priceRange.max) {
-		where.basePrice = {};
-		if (filters.priceRange.min)
-			where.basePrice[Op.gte] = filters.priceRange.min;
-		if (filters.priceRange.max)
-			where.basePrice[Op.lte] = filters.priceRange.max;
+	if (filters.min || filters.max) {
+		where.price = {};
+		if (filters.min)
+			where.price[Op.gte] = filters.min;
+		if (filters.max)
+			where.price[Op.lte] = filters.max;
 	}
 
 	// Thêm mối quan hệ với bảng brands nếu cần

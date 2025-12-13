@@ -2,6 +2,7 @@ import { db } from '../../loaders/database.loader';
 import { Transaction } from 'sequelize';
 
 export const getCartById = async (cartId: number) => {
+	// Tìm giỏ hàng theo cartId
 	return await db.carts.findByPk(cartId);
 };
 
@@ -11,6 +12,7 @@ export const getOrCreateCart = async (
 ) => {
 	if (!customerId) throw new Error('Customer ID is required');
 
+	// Tìm giỏ hàng dựa trên customerId
 	let cart = await db.carts.findOne({
 		where: { customerId },
 		include: [
@@ -18,8 +20,12 @@ export const getOrCreateCart = async (
 				model: db.cartItems,
 				include: [
 					{
-						model: db.productVariants,
-						
+						model: db.products,
+						include: [
+							{
+								model: db.productImages,
+							},
+						],
 					},
 				],
 			},
@@ -28,6 +34,7 @@ export const getOrCreateCart = async (
 	});
 
 	if (!cart) {
+		// Nếu không tìm thấy giỏ hàng, tạo mới
 		cart = await db.carts.create({ customerId }, { transaction });
 	}
 
@@ -35,5 +42,6 @@ export const getOrCreateCart = async (
 };
 
 export const deleteCart = (cartId: number) => {
+	// Xóa giỏ hàng theo cartId
 	return db.carts.destroy({ where: { id: cartId } });
 };
