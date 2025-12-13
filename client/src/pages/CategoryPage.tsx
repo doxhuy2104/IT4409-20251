@@ -12,22 +12,15 @@ function CategoryPage() {
     const [selectedTypes, setSelectedTypes] = useState<number[]>([]);
     const [sortOption, setSortOption] = useState<string>('name-asc');
     
-    // Get the current path without leading slash (this will be the slug)
     const currentPath = location.pathname.substring(1);
-
-    // Get category ID from slug (for API calls)
     const categoryId = getIdFromSlug(currentPath);
-    console.log('Category ID:', categoryId);
 
     useEffect(() => {
         console.log('Current path:', currentPath);
         console.log('Category ID:', categoryId);
 
-        // Ideally, you would fetch category details from API using categoryId
-        // Example: fetchCategoryDetails(categoryId);
-
-        // For now, set category details manually based on path
         switch (currentPath) {
+            // DANH MỤC
             case "qua-tang-trai-cay":
                 setCategoryName("Quà Tặng Trái Cây");
                 break;
@@ -41,7 +34,8 @@ function CategoryPage() {
                 break;
 
             case "ready-to-eat":
-                setCategoryName("Ready To Eat");
+            case "bep-o-ready-to-eat":
+                setCategoryName("Bếp O - Ready To Eat");
                 break;
 
             case "rau-cu-qua":
@@ -53,7 +47,8 @@ function CategoryPage() {
                 break;
 
             case "ready-to-cook":
-                setCategoryName("Ready To Cook");
+            case "bep-o-ready-to-cook":
+                setCategoryName("Bếp O - Ready To Cook");
                 break;
 
             case "thuc-pham-kho":
@@ -63,7 +58,24 @@ function CategoryPage() {
             case "gia-vi-phu-lieu":
                 setCategoryName("Gia Vị & Phụ Liệu");
                 break;
-            // TRÁI CÂY
+
+            case "do-uong-tot-suc-khoe":
+                setCategoryName("Đồ Uống Tốt Sức Khỏe");
+                break;
+
+            case "bo-sua":
+                setCategoryName("Bơ - Sữa");
+                break;
+
+            case "me-be":
+                setCategoryName("Mẹ & Bé");
+                break;
+
+            case "superfood":
+                setCategoryName("Superfood");
+                break;
+
+            // TRÁI CÂY THEO MÙA
             case "trai-cay-viet":
                 setCategoryName("Trái Cây Việt");
                 break;
@@ -72,64 +84,106 @@ function CategoryPage() {
                 setCategoryName("Trái Cây Nhập Khẩu");
                 break;
 
-            case "trai-cay-cat-san":
-                setCategoryName("Trái Cây Cắt Sẵn");
+            case "trai-cay-say-dong-lanh":
+                setCategoryName("Trái Cây Sấy - Đông Lạnh");
                 break;
-            // RAU CỦ QUẢ
+
+            case "nuoc-ep-trai-cay-tuoi":
+                setCategoryName("Nước Ép Trái Cây Tươi");
+                break;
+
+            // RAU CỦ QUẢ 
+            case "rau-la-huu-co":
             case "rau-an-la":
-                setCategoryName("Rau Ăn Lá");
+                setCategoryName("Rau Lá Hữu Cơ");
                 break;
 
+            case "cu-qua-huu-co":
             case "rau-cu":
-                setCategoryName("Rau Củ");
+                setCategoryName("Củ Quả Hữu Cơ");
                 break;
 
-            case "qua-tuoi":
-                setCategoryName("Quả Tươi");
-                break;
-
+            case "nam":
             case "nam-tuoi":
-                setCategoryName("Nấm Tươi");
+                setCategoryName("Nấm");
                 break;
-            // TƯƠI SỐNG
+            case "thit-heo-huu-co":
             case "thit-heo":
-                setCategoryName("Thịt Heo");
+                setCategoryName("Thịt Heo Hữu Cơ");
                 break;
-
+            case "thit-bo-huu-co":
             case "thit-bo":
-                setCategoryName("Thịt Bò");
+                setCategoryName("Thịt Bò Hữu Cơ");
                 break;
-
+            case "thit-bo-to-tay-ninh":
+                setCategoryName("Thịt Bò Tơ Tây Ninh");
+                break;
+            case "thit-bo-obe":
+                setCategoryName("Thịt Bò Obe");
+                break;
+            case "thit-gia-cam-trung":
             case "thit-ga":
-                setCategoryName("Thịt Gà");
+                setCategoryName("Thịt Gia Cầm - Trứng");
                 break;
-
+            case "thuy-hai-san":
             case "hai-san":
-                setCategoryName("Hải Sản");
+                setCategoryName("Thủy & Hải Sản");
                 break;
-
+            case "thuy-san":
+                setCategoryName("Thuỷ Sản");
+                break;
+            case "hai-san-kho-mot-nang":
+                setCategoryName("Hải Sản Khô & Một Nắng");
+                break;
             case "trung":
                 setCategoryName("Trứng");
                 break;
-            // THỰC PHẨM KHÔ
+
+            //  THỰC PHẨM KHÔ  
+            case "cac-loai-hat-huu-co":
             case "hat-dinh-duong":
-                setCategoryName("Hạt Dinh Dưỡng");
+                setCategoryName("Các Loại Hạt Hữu Cơ");
                 break;
 
-            case "trai-cay-kho":
-                setCategoryName("Trái Cây Khô");
-                break;
-
+            case "ngu-coc-huu-co":
             case "hat-ngu-coc":
-                setCategoryName("Hạt Ngũ Cốc");
+                setCategoryName("Ngũ Cốc Hữu Cơ");
                 break;
 
-            case "bot":
-                setCategoryName("Bột");
+            case "gao-huu-co":
+                setCategoryName("Gạo Hữu Cơ");
                 break;
-            // GIA VỊ – PHỤ LIỆU
+
+            case "mi-nui-huu-co":
+                setCategoryName("Mì & Nui Hữu Cơ");
+                break;
+
+            case "banh-keo-socola":
+                setCategoryName("Bánh Kẹo & Socola");
+                break;
+
+            case "do-kho-khac":
+            case "trai-cay-kho":
+                setCategoryName("Đồ Khô Khác");
+                break;
+
+            case "nguyen-lieu-lam-banh":
+            case "bot":
+                setCategoryName("Nguyên Liệu Làm Bánh");
+                break;
+
+            case "snack-organic":
+                setCategoryName("Snack Organic");
+                break;
+
+            // GIA VỊ & PHỤ LIỆU 
+            case "gia-vi-nguyen-phu-lieu":
             case "gia-vi":
-                setCategoryName("Gia Vị");
+                setCategoryName("Gia Vị Nguyên - Phụ Liệu");
+                break;
+
+            case "mat-ong":
+                setCategoryName("Mật Ong");
                 break;
 
             case "dau-an":
@@ -144,7 +198,58 @@ function CategoryPage() {
                 setCategoryName("Đường - Muối");
                 break;
 
-            // READY TO EAT
+            // ĐỒ UỐNG TỐT SỨC KHỎE
+            case "tra-huu-co":
+                setCategoryName("Trà Hữu Cơ");
+                break;
+
+            case "ca-phe-huu-co":
+                setCategoryName("Cà Phê Hữu Cơ");
+                break;
+
+            case "nuoc-ep-huu-co":
+                setCategoryName("Nước Ép Hữu Cơ");
+                break;
+
+            case "do-uong-co-con":
+                setCategoryName("Đồ Uống Có Cồn");
+                break;
+
+            //  BƠ SỮA 
+            case "sua-hat":
+                setCategoryName("Sữa Hạt");
+                break;
+
+            case "sua-tuoi":
+                setCategoryName("Sữa Tươi");
+                break;
+
+            case "sua-chua":
+                setCategoryName("Sữa Chua");
+                break;
+
+            case "bo-phomai":
+                setCategoryName("Bơ & Phomai");
+                break;
+
+            case "sua-dac":
+                setCategoryName("Sữa Đặc");
+                break;
+
+            //SUPERFOOD
+            case "cham-soc-tieu-hoa":
+                setCategoryName("Chăm Sóc Tiêu Hoá");
+                break;
+
+            case "bo-sung-suc-khoe":
+                setCategoryName("Bổ Sung Sức Khoẻ");
+                break;
+
+            case "protein-thuc-vat-huu-co":
+                setCategoryName("Protein Thực Vật Hữu Cơ");
+                break;
+
+            //READY TO EAT
             case "com-hop":
                 setCategoryName("Cơm Hộp");
                 break;
@@ -160,7 +265,8 @@ function CategoryPage() {
             case "do-an-nhanh":
                 setCategoryName("Đồ Ăn Nhanh");
                 break;
-            // READY TO COOK
+
+            // === READY TO COOK (Subcategories) ===
             case "rau-cu-sach":
                 setCategoryName("Rau Củ Sạch");
                 break;
