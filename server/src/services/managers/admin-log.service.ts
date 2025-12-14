@@ -84,3 +84,17 @@ export const CreateAdminLog = async (
 		{ transaction },
 	);
 };
+
+export const deleteAdminLog = async (
+	id: number,
+	transaction?: Transaction,
+) => {
+	const adminLog = await db.adminLogs.findByPk(id, { transaction });
+
+	if (!adminLog) {
+		throw new Error('ADMIN_LOG_NOT_FOUND');
+	}
+
+	await adminLog.destroy({ transaction });
+	return true;
+};
