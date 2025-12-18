@@ -9,6 +9,8 @@ import { CartItems } from '../models/cart-items.model';
 import { Orders } from '../models/orders.model';
 import { OrderItems } from '../models/order-items.model';
 import { Admins } from 'src/models/admins.model';
+import { AdminLogs } from 'src/models/admin-log.model';
+import { Feedbacks } from '../models/feedbacks.model';
 
 const dbConfig = env.database;
 
@@ -60,6 +62,8 @@ Carts.initClass(sequelize);
 CartItems.initClass(sequelize);
 Orders.initClass(sequelize);
 OrderItems.initClass(sequelize);
+AdminLogs.initClass(sequelize);
+Feedbacks.initClass(sequelize);
 // 1. Categories (có thể có danh mục cha)
 Categories.belongsTo(Categories, { as: 'parent', foreignKey: 'parentId' });
 Categories.hasMany(Categories, { as: 'subCategories', foreignKey: 'parentId' });
@@ -86,10 +90,14 @@ Customers.hasMany(Orders, { foreignKey: 'customerId' });
 OrderItems.belongsTo(Orders, { foreignKey: 'orderId' });
 Orders.hasMany(OrderItems, { foreignKey: 'orderId' });
 
+Feedbacks.belongsTo(Customers, { foreignKey: 'userId' });
+Customers.hasMany(Feedbacks, { foreignKey: 'userId' });
+
 // Xuất các model và kết nối
 export const db = {
 	sequelize: sequelize,
 	admins: Admins,
+	adminLogs: AdminLogs,
 	categories: Categories,
 	products: Products,
 	customers: Customers,
@@ -97,5 +105,6 @@ export const db = {
 	cartItems: CartItems,
 	orders: Orders,
 	orderItems: OrderItems,
+	feedbacks: Feedbacks,
 	connectToDatabase,
 };

@@ -1,18 +1,15 @@
 import express from 'express';
 import * as productsManagers from '../controllers/managers/products.controller';
 import * as productsCustomers from '../controllers/customers/products.controller';
-import { isManager, verifyToken } from '../middleware/authenticate.middleware';
-import { authorization, RoleManager } from '../middleware/manager.middleware';
+import { isManager, verifyToken } from '../middlewares/authenticate.middleware';
+import { authorization, RoleManager } from '../middlewares/manager.middleware';
 import * as wishlist from '../controllers/customers/wishlists.controller';
-// import { upload } from '../utility/media.util';
-import { upload } from '../utility/cloudinary.util';
-
+import { upload } from '../../utility/cloudinary.util';
+	
 const router = express.Router();
 
 // Router cho customers (lấy ra sản phẩm)
 router.get('/', productsCustomers.getProducts);
-
-// Wishlist cho customer
 router.get('/wishlist', verifyToken, wishlist.getAllWishlists);
 router.post('/wishlist/:id', verifyToken, wishlist.createWishlist);
 router.delete('/wishlist/:id', verifyToken, wishlist.deleteWishlist);

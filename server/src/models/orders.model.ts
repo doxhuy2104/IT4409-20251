@@ -14,6 +14,8 @@ export class Orders extends Model<
 	declare customerId: number;
 	declare warehouseId: CreationOptional<number>;
 	declare totalAmount: number;
+	declare shippingAddress: string;
+	declare paymentMethod: CreationOptional<string>;
 	declare status: CreationOptional<
 		| 'draft'
 		| 'pending'
@@ -37,6 +39,14 @@ export class Orders extends Model<
 				totalAmount: {
 					type: DataTypes.DECIMAL(15, 2),
 					allowNull: false,
+				},
+				shippingAddress: {
+					type: DataTypes.TEXT,
+					allowNull: false,
+				},
+				paymentMethod: {
+					type: DataTypes.STRING(50),
+					allowNull: true,
 				},
 				status: {
 					type: DataTypes.ENUM(

@@ -3,7 +3,7 @@ import http from 'http';
 import env from './env';
 import { db } from './src/loaders/database.loader';
 import ExpressLoader from './src/loaders/express.loader';
-import { router } from './src/routers';
+import { router } from './src/routes';
 
 
 async function main() {

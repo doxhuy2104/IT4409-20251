@@ -17,7 +17,8 @@ export class Products extends Model<
 	declare categoryId: number;
 	declare brandId: number;
 	declare description: CreationOptional<string>;
-	declare basePrice: number;
+	declare price: number;
+	declare stock: CreationOptional<number>;
 	declare isActive: CreationOptional<boolean>;
 	declare createdAt: CreationOptional<Date>;
 	declare updatedAt: CreationOptional<Date>;
@@ -42,7 +43,8 @@ export class Products extends Model<
 				categoryId: { type: DataTypes.INTEGER, allowNull: false },
 				brandId: { type: DataTypes.INTEGER, allowNull: false },
 				description: DataTypes.TEXT,
-				basePrice: { type: DataTypes.DECIMAL(15, 2), allowNull: false },
+				price: { type: DataTypes.DECIMAL(15, 2), allowNull: false },
+				stock: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 0 },
 				isActive: { type: DataTypes.BOOLEAN, defaultValue: true },
 				createdAt: DataTypes.DATE,
 				updatedAt: DataTypes.DATE,

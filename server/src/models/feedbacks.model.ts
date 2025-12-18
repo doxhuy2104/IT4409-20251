@@ -6,6 +6,7 @@ import {
 	Sequelize,
 	DataTypes,
 } from 'sequelize';
+
 export class Feedbacks extends Model<
 	InferAttributes<Feedbacks>,
 	InferCreationAttributes<Feedbacks>

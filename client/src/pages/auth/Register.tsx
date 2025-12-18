@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { CheckCircle, Mail } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import Logo from '../../components/Logo';
@@ -256,6 +257,31 @@ const Register: React.FC = () => {
               .
             </label>
           </div>
+
+          {registrationSuccess && (
+                <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+                  <div className="flex items-center">
+                    <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
+                    <h3 className="text-sm font-medium text-green-800">Đăng ký thành công!</h3>
+                  </div>
+                  <div className="mt-2 flex items-start">
+                    <Mail className="h-5 w-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <p className="text-sm text-green-700">
+                        Email xác nhận đã được gửi đến <span className="font-semibold">{email}</span>
+                      </p>
+                      <p className="text-sm text-green-700 mt-1">
+                        Vui lòng kiểm tra hộp thư (cả thư rác) và nhấn vào liên kết xác nhận để hoàn tất đăng ký.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="mt-3">
+                    <Link to="/auth/login" className="text-sm font-medium text-green-700 hover:text-green-900 underline">
+                      Quay lại trang đăng nhập
+                    </Link>
+                  </div>
+                </div>
+              )}
 
           {/* Nút đăng ký */}
           <button
