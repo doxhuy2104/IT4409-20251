@@ -209,34 +209,34 @@ const AddProduct = () => {
   };
 
   return (
-    <div>
+    <div className="p-8 w-full min-h-screen bg-white">
       <BackButton onClick={handleBack} />
-      <h1>Thêm sản phẩm</h1>
+      <h1 className="text-2xl font-bold mb-8 text-center">Thêm sản phẩm</h1>
       <form
         onSubmit={handleSubmit}
-      
+        className="mt-6 bg-white p-10 space-y-8 mx-auto"
         encType="multipart/form-data"
       >
         <div>
-          <label>Tên sản phẩm <span>*</span></label>
+          <label className="block font-semibold mb-2 text-lg">Tên sản phẩm <span className="text-red-500">*</span></label>
           <input
             type="text"
             name="name"
             placeholder="Nhập tên sản phẩm"
             value={form.name}
             onChange={handleChange}
-          
+            className="w-full p-3 border rounded focus:outline-green-400 text-lg"
             required
           />
         </div>
-        <div>
+        <div className="flex flex-col md:flex-row gap-8">
           <div className="flex-1">
-            <label>Danh mục <span>*</span></label>
+            <label className="block font-semibold mb-2 text-lg">Danh mục <span className="text-red-500">*</span></label>
             <select
               name="categoryId"
               value={form.categoryId}
               onChange={handleChange}
-            
+              className="w-full p-3 border rounded text-lg"
               required
             >
               <option value="">Chọn danh mục</option>
@@ -246,12 +246,12 @@ const AddProduct = () => {
             </select>
           </div>
           <div className="flex-1">
-            <label>Thương hiệu <span>*</span></label>
+            <label className="block font-semibold mb-2 text-lg">Thương hiệu <span className="text-red-500">*</span></label>
             <select
               name="brandId"
               value={form.brandId}
               onChange={handleChange}
-            
+              className="w-full p-3 border rounded text-lg"
               required
             >
               <option value="">Chọn thương hiệu</option>
@@ -261,48 +261,48 @@ const AddProduct = () => {
             </select>
           </div>
         </div>
-        <div>
+        <div className="flex flex-col md:flex-row gap-8">
           <div className="flex-1">
-            <label>Giá <span>*</span></label>
+            <label className="block font-semibold mb-2 text-lg">Giá <span className="text-red-500">*</span></label>
             <input
               type="number"
               name="price"
               placeholder="Nhập giá"
               value={form.price}
               onChange={handleChange}
-            
+              className="w-full p-3 border rounded text-lg"
               min={0}
               required
             />
             {form.price && (
-              <div>
+              <div className="text-sm text-gray-500 mt-1">
                 {formatCurrency(form.price)}
               </div>
             )}
           </div>
           <div className="flex-1">
-            <label>Số lượng <span>*</span></label>
+            <label className="block font-semibold mb-2 text-lg">Số lượng <span className="text-red-500">*</span></label>
             <input
               type="number"
               name="stock"
               placeholder="Nhập số lượng"
               value={form.stock}
               onChange={handleChange}
-            
+              className="w-full p-3 border rounded text-lg"
               min={0}
               required
             />
           </div>
         </div>
-        <label>Ảnh sản phẩm</label>
+        <label className="block font-semibold mb-2 text-lg">Ảnh sản phẩm</label>
         <ImageUploader
           onImageChange={handleImageChange}
           imagePreviews={imagePreviews}
           onRemoveImage={handleRemoveImage}
         />
-        <div>
-          <label>Mô tả <span>*</span></label>
-          <div style={{ minHeight: '200px' }}>
+        <div className="mb-6 relative">
+          <label className="block font-semibold mb-2 text-lg">Mô tả <span className="text-red-500">*</span></label>
+          <div className="mb-4 relative" style={{ minHeight: '200px' }}>
             <ReactQuill
               theme="snow"
               value={form.description}
@@ -315,11 +315,11 @@ const AddProduct = () => {
             />
           </div>
         </div>
-        {error && <div >{error}</div>}
-        {success && <div >{success}</div>}
+        {error && <div className="text-red-500 font-semibold text-lg">{error}</div>}
+        {success && <div className="text-green-600 font-semibold text-lg">{success}</div>}
         <button
           type="submit"
-        
+          className="bg-green-500 text-white px-8 py-3 rounded hover:bg-green-600 font-semibold w-full text-lg shadow"
           disabled={loading}
         >
           {loading ? "Đang thêm..." : "Thêm sản phẩm"}
