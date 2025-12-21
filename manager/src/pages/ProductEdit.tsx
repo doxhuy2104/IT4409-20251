@@ -235,22 +235,22 @@ const ProductEdit = () => {
     setLoading(false);
   };
 
-  if (loading && !product) return <div>Đang tải dữ liệu...</div>;
-  if (error) return <div>{error}</div>;
+  if (loading && !product) return <div className="p-4">Đang tải dữ liệu...</div>;
+  if (error) return <div className="p-4 text-red-500">{error}</div>;
   if (!product) return null;
 
   return (
-    <div >
-      <BackButton  onClick={() => navigate(-1)} />
-      <h1 >Chỉnh sửa sản phẩm</h1>
-      <form  onSubmit={handleSubmit} encType="">
+    <div className="pt-8 w-full min-h-screen bg-white">
+      <BackButton className="ml-8" onClick={() => navigate(-1)} />
+      <h1 className="text-3xl font-bold mb-8 text-green-700 text-center">Chỉnh sửa sản phẩm</h1>
+      <form className="w-full mx-auto bg-white shadow-lg rounded-xl p-8 space-y-6" onSubmit={handleSubmit} encType="multipart/form-data">
         <div>
-          <label>Tên sản phẩm</label>
-          <input name="name" value={form.name || ""} onChange={handleChange} required />
+          <label className="block font-semibold mb-1">Tên sản phẩm</label>
+          <input name="name" value={form.name || ""} onChange={handleChange} className="w-full border rounded px-3 py-2" required />
         </div>
         <div>
-          <label>Danh mục</label>
-          <select name="categoryId" value={form.categoryId || ""} onChange={handleChange} required>
+          <label className="block font-semibold mb-1">Danh mục</label>
+          <select name="categoryId" value={form.categoryId || ""} onChange={handleChange} className="w-full border rounded px-3 py-2" required>
             <option value="">Chọn danh mục</option>
             {categories.map(cat => (
               <option key={cat.id} value={cat.id}>{cat.name}</option>
@@ -258,26 +258,26 @@ const ProductEdit = () => {
           </select>
         </div>
         <div>
-          <label>Thương hiệu</label>
-          <select name="brandId" value={form.brandId || ""} onChange={handleChange}required>
+          <label className="block font-semibold mb-1">Thương hiệu</label>
+          <select name="brandId" value={form.brandId || ""} onChange={handleChange} className="w-full border rounded px-3 py-2" required>
             <option value="">Chọn thương hiệu</option>
             {brands.map(brand => (
               <option key={brand.id} value={brand.id}>{brand.name}</option>
             ))}
           </select>
         </div>
-        <div>
+        <div className="grid grid-cols-2 gap-4">
           <div>
-            <label>Giá</label>
-            <input type="number" name="price" value={form.price || ""} onChange={handleChange} min={0} required />
+            <label className="block font-semibold mb-1">Giá</label>
+            <input type="number" name="price" value={form.price || ""} onChange={handleChange} className="w-full border rounded px-3 py-2" min={0} required />
           </div>
           <div>
-            <label>Số lượng</label>
-            <input type="number" name="stock" value={form.stock || ""} onChange={handleChange} min={0} required />
+            <label className="block font-semibold mb-1">Số lượng</label>
+            <input type="number" name="stock" value={form.stock || ""} onChange={handleChange} className="w-full border rounded px-3 py-2" min={0} required />
           </div>
         </div>
         <div>
-          <label>Ảnh sản phẩm mới (có thể chọn nhiều)</label>
+          <label className="block font-semibold mb-1">Ảnh sản phẩm mới (có thể chọn nhiều)</label>
           <ImageUploader
             onImageChange={handleImageChange}
             imagePreviews={imagePreviews}
@@ -286,20 +286,20 @@ const ProductEdit = () => {
         </div>
         {oldImages.length > 0 && (
           <div>
-            <label>Ảnh hiện tại</label>
-            <div>
+            <label className="block font-semibold mb-1">Ảnh hiện tại</label>
+            <div className="flex flex-wrap gap-4">
               {oldImages.map(img => (
                 <div key={img.id} className="relative">
-                  <img src={`${img.imageUrl}`} alt="old"/>
-                  <button type="button" onClick={() => handleRemoveOldImage(img.id)}>×</button>
+                  <img src={`${img.imageUrl}`} alt="old" className="w-24 h-24 object-cover rounded border" />
+                  <button type="button" onClick={() => handleRemoveOldImage(img.id)} className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center">×</button>
                 </div>
               ))}
             </div>
           </div>
         )}
-        <div>
-          <label>Mô tả</label>
-          <div>
+        <div className="mb-6 relative">
+          <label className="block font-semibold mb-1">Mô tả</label>
+          <div className="mb-4 relative" style={{ minHeight: '200px' }}>
             <ReactQuill
               theme="snow"
               value={form.description || ""}
@@ -312,9 +312,9 @@ const ProductEdit = () => {
             />
           </div>
         </div>
-        <div >
-          <button type="button" onClick={() => navigate(-1)}>Hủy</button>
-          <button type="submit" disabled={loading}>{loading ? "Đang lưu..." : "Lưu thay đổi"}</button>
+        <div className="flex justify-end gap-4 mt-8">
+          <button type="button" className="px-4 py-2 rounded bg-gray-300 cursor-pointer hover:bg-gray-400 transition-colors duration-300 ease-in-out" onClick={() => navigate(-1)}>Hủy</button>
+          <button type="submit" className="px-4 py-2 rounded bg-green-600 text-white cursor-pointer hover:bg-green-700 transition-colors duration-300 ease-in-out" disabled={loading}>{loading ? "Đang lưu..." : "Lưu thay đổi"}</button>
         </div>
       </form>
     </div>
