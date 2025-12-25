@@ -98,3 +98,25 @@ export const deleteAdminLog = async (
 	await adminLog.destroy({ transaction });
 	return true;
 };
+
+export const getAdminLogById = async (
+  id: number,
+  transaction?: Transaction,
+) => {
+  const log = await db.adminLogs.findByPk(id, {
+    include: [
+      {
+        model: db.admins,
+        attributes: ['username', 'email'],
+      },
+    ],
+    transaction,
+  });
+
+  if (!log) {
+    throw new Error('Không tìm thấy log.');
+  }
+
+  return log;
+};
+
