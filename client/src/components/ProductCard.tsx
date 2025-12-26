@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { Product } from "../types/product";
-import wishlistService from "../services/wishlist.service";
-import { useAuth } from "../hooks/useAuth";
+// import { useAuth } from "../hooks/useAuth";
 
 // Helper function to extract product information from ProductV2
 const extractProductInfo = (product: Product) => {
@@ -44,65 +43,6 @@ interface ProductCardProps {
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     const productInfo = extractProductInfo(product)
         ;
-
-    // Get authentication status
-    const { isAuthenticated } = useAuth();
-
-    // State for wishlist functionality
-    const [inWishlist, setInWishlist] = useState<boolean>(false);
-    const [wishlistId, setWishlistId] = useState<number | undefined>(undefined);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
-
-    // Check if product is in wishlist (only when authenticated)
-    useEffect(() => {
-        const checkWishlist = async () => {
-            // Only check wishlist if user is authenticated
-            if (!isAuthenticated) {
-                setInWishlist(false);
-                setWishlistId(undefined);
-                return;
-            }
-
-            try {
-                const result = await wishlistService.checkInWishlist(productInfo.id);
-                setInWishlist(result.inWishlist);
-                setWishlistId(result.wishlistId);
-            } catch (error) {
-                console.error('Error checking wishlist status:', error);
-                // Reset wishlist state on error
-                setInWishlist(false);
-                setWishlistId(undefined);
-            }
-        };
-
-        checkWishlist();
-    }, [productInfo.id, isAuthenticated]);
-
-    // Toggle wishlist status
-    const handleToggleWishlist = async (e: React.MouseEvent) => {
-        e.preventDefault(); // Prevent navigating to product detail
-        e.stopPropagation(); // Prevent event bubbling
-
-        if (isLoading) return;
-
-        setIsLoading(true);
-        try {
-            if (inWishlist && wishlistId) {
-                await wishlistService.removeFromWishlist(wishlistId);
-                setInWishlist(false);
-                setWishlistId(undefined);
-            } else {
-                const result = await wishlistService.addToWishlist(productInfo.id);
-                setInWishlist(true);
-                setWishlistId(result.id);
-            }
-        } catch (error) {
-            console.error('Error toggling wishlist:', error);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
     return (
         <Link to={`/product/${productInfo.slug || productInfo.id}`} className="block">
             <div className="bg-white rounded-lg shadow hover:shadow-md transition-all overflow-hidden">
@@ -127,9 +67,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                     <h3 className="font-medium text-gray-900 mb-2 text-sm line-clamp-2 h-10 hover:text-green-500">
                         {productInfo.name}
                     </h3>
-
-
-
                     <div className="text-green-400 font-semibold text-lg">
                         {productInfo.price.toLocaleString()}₫
                     </div>

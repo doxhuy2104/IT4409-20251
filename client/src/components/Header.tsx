@@ -334,13 +334,12 @@ const Header: React.FC = () => {
 
                   {/* Suggested products section */}
                   {suggestedProducts.length > 0 && (
-                    <div className="border-t">
-                      <h3 className="px-4 py-2.5 text-gray-500 text-sm font-medium bg-gray-50">Sản phẩm gợi ý</h3>
+                    <div>
                       {suggestedProducts.map((product) => (
                         <Link
                           key={product.id}
                           to={`/product/${product.slug}`}
-                          className="flex p-3 hover:bg-gray-50 border-b transition-colors"
+                          className="flex p-3 hover:bg-gray-50 transition-colors"
                           onClick={() => setShowSuggestions(false)}
                         >
                           <div className="w-12 h-12 flex-shrink-0 bg-gray-100 p-1 rounded-md overflow-hidden">
@@ -789,18 +788,7 @@ const Header: React.FC = () => {
                     className="flex items-center p-3 rounded-lg hover:bg-gray-100"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
-                    <div className="w-8 h-8 bg-green-50 rounded-full flex items-center justify-center mr-3">
-                      {category.icon === 'phone' && <i className="fas fa-mobile-alt text-sm text-green-600"></i>}
-                      {category.icon === 'laptop' && <i className="fas fa-laptop text-sm text-green-600"></i>}
-                      {category.icon === 'accessories' && <i className="fas fa-headphones text-sm text-green-600"></i>}
-                      {category.icon === 'watch' && <i className="fas fa-stopwatch text-sm text-green-600"></i>}
-                      {category.icon === 'clock' && <i className="fas fa-clock text-sm text-green-600"></i>}
-                      {category.icon === 'tablet' && <i className="fas fa-tablet-alt text-sm text-green-600"></i>}
-                      {category.icon === 'monitor' && <i className="fas fa-desktop text-sm text-green-600"></i>}
-                      {category.icon === 'camera' && <i className="fas fa-camera text-sm text-green-600"></i>}
-                      {category.icon === 'cctv' && <i className="fas fa-video text-sm text-green-600"></i>}
-                      {category.icon === 'printer' && <i className="fas fa-print text-sm text-green-600"></i>}
-                    </div>
+                    
                     <span className="text-sm">{category.name}</span>
                     {/* {category.hasDropdown && <ChevronDown size={16} className="ml-auto" />} */}
                   </Link>
