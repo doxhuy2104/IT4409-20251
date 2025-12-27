@@ -2,31 +2,6 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../components/AuthContext";
 import { useNavigate } from "react-router-dom";
 
-/**
- * Validate email format
- */
-const validateEmail = (email: string): boolean => {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
-};
-
-/**
- * Validate password strength
- */
-const validatePassword = (password: string): { isValid: boolean; message?: string } => {
-  if (password.length < 6) {
-    return { isValid: false, message: "Mật khẩu phải có ít nhất 6 ký tự" };
-  }
-  return { isValid: true };
-};
-
-/**
- * Sanitize input to prevent XSS
- */
-const sanitizeInput = (input: string): string => {
-  return input.trim().replace(/[<>]/g, '');
-};
-
 export default function Login() {
   const { login, error, currentUser } = useAuth();
   const navigate = useNavigate();
@@ -35,9 +10,6 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [formError, setFormError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [emailError, setEmailError] = useState<string | null>(null);
-  const [passwordError, setPasswordError] = useState<string | null>(null);
 
   useEffect(() => {
     if (currentUser) {
@@ -45,69 +17,9 @@ export default function Login() {
     }
   }, [currentUser, navigate]);
 
-  /**
-   * Handle email change with validation
-   */
-  const handleEmailChange = (value: string) => {
-    const sanitized = sanitizeInput(value);
-    setEmail(sanitized);
-    
-    if (sanitized && !validateEmail(sanitized)) {
-      setEmailError("Email không hợp lệ");
-    } else {
-      setEmailError(null);
-    }
-  };
-
-  /**
-   * Handle password change with validation
-   */
-  const handlePasswordChange = (value: string) => {
-    setPassword(value);
-    
-    if (value) {
-      const validation = validatePassword(value);
-      if (!validation.isValid) {
-        setPasswordError(validation.message || null);
-      } else {
-        setPasswordError(null);
-      }
-    } else {
-      setPasswordError(null);
-    }
-  };
-
-  /**
-   * Toggle password visibility
-   */
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
-
-  /**
-   * Handle form submission
-   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Clear previous errors
     setFormError(null);
-    setEmailError(null);
-    setPasswordError(null);
-
-    // Validate email
-    if (!validateEmail(email)) {
-      setEmailError("Email không hợp lệ");
-      return;
-    }
-
-    // Validate password
-    const passwordValidation = validatePassword(password);
-    if (!passwordValidation.isValid) {
-      setPasswordError(passwordValidation.message || null);
-      return;
-    }
-
     setLoading(true);
     try {
       await login(email, password);
@@ -117,19 +29,6 @@ export default function Login() {
     } finally {
       setLoading(false);
     }
-  };
-
-  /**
-   * Check if form is valid
-   */
-  const isFormValid = (): boolean => {
-    return (
-      email.length > 0 &&
-      password.length > 0 &&
-      !emailError &&
-      !passwordError &&
-      validateEmail(email)
-    );
   };
 
   return (
@@ -144,14 +43,10 @@ export default function Login() {
           <h2 className="mt-6 text-3xl font-bold text-gray-900 tracking-tight">
             Đăng nhập
           </h2>
-          <p className="mt-2 text-sm text-gray-600">
-            Vui lòng nhập thông tin đăng nhập
-          </p>
         </div>
 
         <form onSubmit={handleSubmit} className="mt-8 space-y-6">
           <div className="space-y-4">
-            {/* Email Field */}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                 Email
@@ -164,52 +59,33 @@ export default function Login() {
                   required
                   autoComplete="email"
                   value={email}
-                  onChange={(e) => handleEmailChange(e.target.value)}
-                  className={`appearance-none block w-full px-3 py-2.5 border ${
-                    emailError ? 'border-red-500' : 'border-gray-300'
-                  } rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200`}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="appearance-none block w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200"
                   placeholder="Nhập email của bạn"
                 />
-                {emailError && (
-                  <p className="mt-1 text-sm text-red-600">{emailError}</p>
-                )}
               </div>
             </div>
 
-            {/* Password Field */}
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                 Mật khẩu
               </label>
-              <div className="mt-1 relative">
+              <div className="mt-1">
                 <input
                   id="password"
                   name="password"
-                  type={showPassword ? "text" : "password"}
+                  type="password"
                   required
                   autoComplete="current-password"
                   value={password}
-                  onChange={(e) => handlePasswordChange(e.target.value)}
-                  className={`appearance-none block w-full px-3 py-2.5 border ${
-                    passwordError ? 'border-red-500' : 'border-gray-300'
-                  } rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200`}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="appearance-none block w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200"
                   placeholder="Nhập mật khẩu của bạn"
                 />
-                <button
-                  type="button"
-                  onClick={togglePasswordVisibility}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                >
-                  {showPassword ? "👁️" : "👁️‍🗨️"}
-                </button>
-                {passwordError && (
-                  <p className="mt-1 text-sm text-red-600">{passwordError}</p>
-                )}
               </div>
             </div>
           </div>
 
-          {/* Error Messages */}
           {(formError || error) && (
             <div className="rounded-md bg-red-50 p-4">
               <div className="flex">
@@ -225,11 +101,10 @@ export default function Login() {
             </div>
           )}
 
-          {/* Submit Button */}
           <div>
             <button
               type="submit"
-              disabled={loading || !isFormValid()}
+              disabled={loading}
               className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
               {loading ? (
