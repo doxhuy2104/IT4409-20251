@@ -1,8 +1,8 @@
 import apiClient from './api.client';
-import { Cart, CartItemV2, CartResponse } from '../types/cart';
+import { Cart, CartItem, CartResponse } from '../types/cart';
 
 export interface AddToCartParams {
-    variantId: number;
+    productId: number;
     quantity: number;
 }
 
@@ -21,11 +21,11 @@ const cartService = {
 
     /**
      * Thêm sản phẩm vào giỏ hàng
-     * @param params Thông tin sản phẩm cần thêm (variantId và quantity)
+     * @param params Thông tin sản phẩm cần thêm (productId và quantity)
      * @returns Thông tin giỏ hàng sau khi cập nhật
      */
-    async addToCart(params: AddToCartParams): Promise<CartItemV2> {
-        return (await apiClient.post<{ data: CartItemV2 }>('/carts', params)).data;
+    async addToCart(params: AddToCartParams): Promise<CartItem> {
+        return (await apiClient.post<{ data: CartItem }>('/carts', params)).data;
     },
 
     /**
@@ -60,26 +60,20 @@ const cartService = {
      * @param cart Giỏ hàng
      * @returns Tổng giá trị
      */
-    calculateTotal(cart: Cart): { subtotal: number; discount: number; total: number } {
+    calculateTotal(cart: Cart): { subtotal: number; total: number } {
         let subtotal = 0;
-        let discount = 0;
-
         cart.cartItems.forEach(item => {
-            if (item.productVariant) {
-                const price = parseFloat(item.productVariant.price);
-                const discountPrice = item.productVariant.discountPrice
-                    ? parseFloat(item.productVariant.discountPrice)
-                    : 0;
+            if (item.product) {
+                const price = parseFloat(item.product.price);
+
 
                 subtotal += price * item.quantity;
-                discount += discountPrice * item.quantity;
             }
         });
 
         return {
             subtotal,
-            discount,
-            total: subtotal - discount
+            total: subtotal
         };
     }
 };
