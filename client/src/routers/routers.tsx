@@ -15,7 +15,7 @@ import WishlistPage from "../pages/WishlistPage";
 import ProductDetailPage from "../pages/ProductDetailPage";
 import ShoppingCart from "../pages/ShoppingCart";
 import SearchResults from "../pages/SearchResults";
-import PaymentCallback from "../pages/PaymentCallback";
+import Paymentpage from "../pages/PaymentPage";
 import FeedbackPage from "../pages/FeedbackPage";
 
 export default function AppRoutes() {
@@ -35,9 +35,9 @@ export default function AppRoutes() {
         <Route path="/orders" element={<OrdersPage />} />
         <Route path="/orders/:id" element={<OrderDetailPage />} />
         <Route path="/wishlist" element={<WishlistPage />} />
-        <Route path="/payment/callback" element={<PaymentCallback />} />
-        <Route path="/payment-success" element={<PaymentCallback />} />
-        <Route path="/payment-failed" element={<PaymentCallback />} />
+        <Route path="/payment/callback" element={<Paymentpage />} />
+        <Route path="/payment-success" element={<Paymentpage />} />
+        <Route path="/payment-failed" element={<Paymentpage />} />
         <Route path="/notifications" element={<div className="container mx-auto p-8">Thông báo của tôi</div>} />
       </Route>
 
