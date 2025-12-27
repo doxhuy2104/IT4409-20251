@@ -17,6 +17,8 @@ import ShoppingCart from "../pages/ShoppingCart";
 import SearchResults from "../pages/SearchResults";
 import Paymentpage from "../pages/PaymentPage";
 import FeedbackPage from "../pages/FeedbackPage";
+import InfoPage from "../pages/InfoPage";
+import OrganicCertificationPage from "../pages/OrganicCertificationPage";
 
 export default function AppRoutes() {
   return (
@@ -35,68 +37,80 @@ export default function AppRoutes() {
         <Route path="/orders" element={<OrdersPage />} />
         <Route path="/orders/:id" element={<OrderDetailPage />} />
         <Route path="/wishlist" element={<WishlistPage />} />
-        <Route path="/payment/callback" element={<Paymentpage />} />
-        <Route path="/payment-success" element={<Paymentpage />} />
-        <Route path="/payment-failed" element={<Paymentpage />} />
+        <Route path="/payment/:orderId" element={<Paymentpage />} />
         <Route path="/notifications" element={<div className="container mx-auto p-8">Thông báo của tôi</div>} />
       </Route>
 
       {/* Search results */}
       <Route path="/search" element={<SearchResults />} />
-
-      {/* Public routes - Category routes */}
-      {/* Danh mục chính */}
-      <Route path="/tinh-bot" element={<CategoryPage />} />
-      <Route path="/hat-trai-cay-kho" element={<CategoryPage />} />
-      <Route path="/banh-keo-snack" element={<CategoryPage />} />
-      <Route path="/thuc-pham-dong-hop" element={<CategoryPage />} />
-      <Route path="/gia-vi-nguyen-lieu" element={<CategoryPage />} />
-      <Route path="/do-uong" element={<CategoryPage />} />
-      <Route path="/thit-hai-san-tuoi" element={<CategoryPage />} />
-      <Route path="/rau-qua-tuoi" element={<CategoryPage />} />
-      <Route path="/do-chay-gia-man" element={<CategoryPage />} />
-      <Route path="/viorganicmade" element={<CategoryPage />} />
-
-      {/* Tinh bột */}
-      <Route path="/gao" element={<CategoryPage />} />
-      <Route path="/mien-pho-bun" element={<CategoryPage />} />
-      <Route path="/mi-Y" element={<CategoryPage />} />
-      <Route path="/tinh-bot-khac" element={<CategoryPage />} />
-
-      {/* Hạt và trái cây khô */}
-      <Route path="/hat-kho" element={<CategoryPage />} />
-      <Route path="/trai-cay-kho" element={<CategoryPage />} />
-
-      {/* Gia vị và nguyên liệu nấu ăn */}
-      <Route path="/dau-an-giam" element={<CategoryPage />} />
-      <Route path="/nguyen-lieu-nau-an" element={<CategoryPage />} />
-      <Route path="/gia-vi-Viet-Nam" element={<CategoryPage />} />
-      <Route path="/gia-vi-nuoc-ngoai" element={<CategoryPage />} />
-      <Route path="/duong-chat-tao-ngot" element={<CategoryPage />} />
-      <Route path="/muoi-nem-tieu" element={<CategoryPage />} />
-
-      {/* Đồ uống */}
-      <Route path="/tra" element={<CategoryPage />} />
-      <Route path="/ca-phe" element={<CategoryPage />} />
-      <Route path="/sua" element={<CategoryPage />} />
-      <Route path="/nuoc-trai-cay" element={<CategoryPage />} />
-      <Route path="/do-uong-khac" element={<CategoryPage />} />      <Route path="/phan-mem" element={<CategoryPage />} />
-
-      {/* Trang phản hồi */}
+      {/* Feedback page */}
       <Route path="/feedback" element={<FeedbackPage />} />
 
-      {/* Thịt và hải sản */}
-      <Route path="/thit-lon" element={<CategoryPage />} />
+      {/* Special pages */}
+      <Route path="/chung-nhan-huu-co" element={<OrganicCertificationPage />} />
+      <Route path="/hang-si-huu-co-gia-tot" element={<InfoPage />} />
+      <Route path="/tu-hao-doanh-nghiep-phu-nu-lam-chu" element={<InfoPage />} />
+      {/* Public routes - Category routes */}
+      {/* Category routes - Danh mục chính */}
+      <Route path="/qua-tang-trai-cay" element={<CategoryPage />} />
+      <Route path="/qua-tang-tet" element={<CategoryPage />} />
+      <Route path="/trai-cay-theo-mua" element={<CategoryPage />} />
+      <Route path="/ready-to-eat" element={<CategoryPage />} />
+      <Route path="/rau-cu-qua" element={<CategoryPage />} />
+      <Route path="/tuoi-song" element={<CategoryPage />} />
+      <Route path="/ready-to-cook" element={<CategoryPage />} />
+      <Route path="/thuc-pham-kho" element={<CategoryPage />} />
+      <Route path="/gia-vi-phu-lieu" element={<CategoryPage />} />
+
+      {/* Subcategories - Trái Cây */}
+      <Route path="/trai-cay-viet" element={<CategoryPage />} />
+      <Route path="/trai-cay-nhap-khau" element={<CategoryPage />} />
+      <Route path="/trai-cay-cat-san" element={<CategoryPage />} />
+
+      {/* Subcategories - Rau Củ Quả */}
+      <Route path="/rau-an-la" element={<CategoryPage />} />
+      <Route path="/rau-cu" element={<CategoryPage />} />
+      <Route path="/qua-tuoi" element={<CategoryPage />} />
+      <Route path="/nam-tuoi" element={<CategoryPage />} />
+
+      {/* Subcategories - Tươi Sống */}
+      <Route path="/thit-heo" element={<CategoryPage />} />
       <Route path="/thit-bo" element={<CategoryPage />} />
-      <Route path="/thit-gia-cam" element={<CategoryPage />} />
-      <Route path="/thit-khac" element={<CategoryPage />} />
-      <Route path="/ca-va-hai-san" element={<CategoryPage />} />
-      <Route path="/:categoryId" element={<CategoryPage />} />
+      <Route path="/thit-ga" element={<CategoryPage />} />
+      <Route path="/hai-san" element={<CategoryPage />} />
+      <Route path="/trung" element={<CategoryPage />} />
 
-      {/* Định tuyến cho chi tiết sản phẩm */}
-      <Route path="/:category/:slug" element={<ProductDetailPage />} />
+      {/* Subcategories - Thực Phẩm Khô */}
+      <Route path="/hat-dinh-duong" element={<CategoryPage />} />
+      <Route path="/trai-cay-kho" element={<CategoryPage />} />
+      <Route path="/hat-ngu-coc" element={<CategoryPage />} />
+      <Route path="/bot" element={<CategoryPage />} />
 
-      {/* Trang 404 */}
+      {/* Subcategories - Gia Vị & Phụ Liệu */}
+      <Route path="/gia-vi" element={<CategoryPage />} />
+      <Route path="/dau-an" element={<CategoryPage />} />
+      <Route path="/nuoc-tuong-nuoc-mam" element={<CategoryPage />} />
+      <Route path="/duong-muoi" element={<CategoryPage />} />
+
+      {/* Subcategories - Ready To Eat */}
+      <Route path="/com-hop" element={<CategoryPage />} />
+      <Route path="/banh-mi" element={<CategoryPage />} />
+      <Route path="/salad" element={<CategoryPage />} />
+      <Route path="/do-an-nhanh" element={<CategoryPage />} />
+
+      {/* Subcategories - Ready To Cook */}
+      <Route path="/rau-cu-sach" element={<CategoryPage />} />
+      <Route path="/thit-uop-san" element={<CategoryPage />} />
+      <Route path="/ca-sach" element={<CategoryPage />} />
+      <Route path="/do-chay" element={<CategoryPage />} />
+
+      {/* Product detail route - must be before catch-all category route */}
+      <Route path="/product/:slug" element={<ProductDetailPage />} />
+
+      {/* Catch-all category route - must be last before 404 */}
+      <Route path="/:categorySlug" element={<CategoryPage />} />
+
+      {/* 404 Not Found - must be last */}
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
