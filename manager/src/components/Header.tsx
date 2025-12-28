@@ -1,6 +1,5 @@
 import { Navigate } from 'react-router-dom';
-import { FaSearch, FaBell, FaSun, FaCog } from 'react-icons/fa';
-import { useAuth } from '../components/AuthContext';
+import { useAuth } from "../AuthContext";
 import LoadingSpinner from './Loading';
 
 const Header = () => {
