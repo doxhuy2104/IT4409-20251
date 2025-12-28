@@ -1,24 +1,22 @@
-import { Routes, Route } from "react-router-dom";
-import Home from "../pages/HomePage";
-import NotFound from "../pages/NotFound";
-import CategoryPage from "../pages/CategoryPage";
+import { Route, Routes } from "react-router-dom";
+import AccountPage from "../pages/AccountPage";
+import ForgotPassword from "../pages/auth/ForgotPassword";
+import GoogleCallback from "../pages/auth/GoogleCallback";
 import Login from "../pages/auth/Login";
 import Register from "../pages/auth/Register.tsx";
-import GoogleCallback from "../pages/auth/GoogleCallback";
-import ForgotPassword from "../pages/auth/ForgotPassword";
 import ResetPassword from "../pages/auth/ResetPassword";
-import OrdersPage from "../pages/OrdersPage";
-import OrderDetailPage from "../pages/OrderDetailPage";
-import PrivateRoute from "./PrivateRoute";
-import AccountPage from "../pages/AccountPage";
-import WishlistPage from "../pages/WishlistPage";
-import ProductDetailPage from "../pages/ProductDetailPage";
-import ShoppingCart from "../pages/ShoppingCart";
-import SearchResults from "../pages/SearchResults";
-import Paymentpage from "../pages/PaymentPage";
+import CategoryPage from "../pages/CategoryPage";
 import FeedbackPage from "../pages/FeedbackPage";
-import InfoPage from "../pages/InfoPage";
-import OrganicCertificationPage from "../pages/OrganicCertificationPage";
+import Home from "../pages/HomePage";
+import NotFound from "../pages/NotFound";
+import OrderDetailPage from "../pages/OrderDetailPage";
+import OrdersPage from "../pages/OrdersPage";
+import Paymentpage from "../pages/PaymentPage";
+import ProductDetailPage from "../pages/ProductDetailPage";
+import SearchResults from "../pages/SearchResults";
+import ShoppingCart from "../pages/ShoppingCart";
+import WishlistPage from "../pages/WishlistPage";
+import PrivateRoute from "./PrivateRoute";
 
 export default function AppRoutes() {
   return (
@@ -46,10 +44,6 @@ export default function AppRoutes() {
       {/* Feedback page */}
       <Route path="/feedback" element={<FeedbackPage />} />
 
-      {/* Special pages */}
-      <Route path="/chung-nhan-huu-co" element={<OrganicCertificationPage />} />
-      <Route path="/hang-si-huu-co-gia-tot" element={<InfoPage />} />
-      <Route path="/tu-hao-doanh-nghiep-phu-nu-lam-chu" element={<InfoPage />} />
       {/* Public routes - Category routes */}
       {/* Category routes - Danh mục chính */}
       <Route path="/qua-tang-trai-cay" element={<CategoryPage />} />
