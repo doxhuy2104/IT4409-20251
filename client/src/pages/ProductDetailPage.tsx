@@ -373,24 +373,6 @@ const ProductDetailPage: React.FC = () => {
                                 </div>
                             </div>
 
-                            {/* Color options */}
-                            {/* {(apiProduct.categoryId === 1 || apiProduct.categoryId === 2) && (
-                                <div className="mb-6">
-                                    <h3 className="font-medium text-gray-700 mb-2">Màu sắc</h3>
-                                    <div className="flex space-x-2">
-                                        <button className="border-2 border-green-500 p-1 rounded-full">
-                                            <div className="w-8 h-8 bg-black rounded-full"></div>
-                                        </button>
-                                        <button className="border-2 border-transparent p-1 rounded-full">
-                                            <div className="w-8 h-8 bg-gray-200 rounded-full"></div>
-                                        </button>
-                                        <button className="border-2 border-transparent p-1 rounded-full">
-                                            <div className="w-8 h-8 bg-green-500 rounded-full"></div>
-                                        </button>
-                                    </div>
-                                </div>
-                            )} */}
-
                             {/* Call to action */}
                             <div className="grid grid-cols-1 gap-3 mb-6">
                                 <button

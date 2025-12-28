@@ -29,8 +29,6 @@ export interface ApiResponse<T> {
 const productService = {
     /**
      * Lấy danh sách sản phẩm với các tham số lọc, phân trang
-     * @param params Tham số truy vấn
-     * @returns Danh sách sản phẩm và thông tin phân trang
      */
     async getProducts(params: ProductQueryParams = {}): Promise<ApiResponse<Product[]>> {
         console.log('params', params);
@@ -39,8 +37,6 @@ const productService = {
 
     /**
    * Lấy chi tiết sản phẩm theo ID
-   * @param id ID của sản phẩm
-   * @returns Thông tin chi tiết của sản phẩm
    */
     async getProductById(id: number): Promise<ApiResponse<Product[]>> {
         return apiClient.get<ApiResponse<Product[]>>('/products', {
@@ -50,8 +46,6 @@ const productService = {
 
     /**
      * Lấy chi tiết sản phẩm theo slug
-     * @param slug Slug của sản phẩm
-     * @returns Thông tin chi tiết của sản phẩm
      */
     async getProductBySlug(slug: string): Promise<ApiResponse<Product[]>> {
         return apiClient.get<ApiResponse<Product[]>>('/products', {
