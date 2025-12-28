@@ -21,4 +21,11 @@ router.delete(
 	adminlog.deleteAdminLogs,
 );
 
+router.get(
+  '/admin-log/:id',
+  authorization([RoleManager.super_admin]),
+  adminlog.getAdminLogDetail,
+);
+
+
 export default router;

@@ -10,7 +10,6 @@ const SearchResults: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [totalResults, setTotalResults] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const limit = 12; // Number of products per page
@@ -37,9 +36,7 @@ const SearchResults: React.FC = () => {
         });
 
         console.log('Search results:', response);
-
         setProducts(response.data);
-        setTotalResults(response.meta?.total || 0);
         setTotalPages(Math.ceil((response.meta?.total || 0) / limit));
         setCurrentPage(page);
       } catch (err) {
@@ -52,7 +49,6 @@ const SearchResults: React.FC = () => {
 
     fetchSearchResults();
   }, [query, page]);
-
   const handlePageChange = (newPage: number) => {
     // Update URL with new page number
     const params = new URLSearchParams(location.search);

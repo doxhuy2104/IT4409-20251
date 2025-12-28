@@ -11,7 +11,6 @@ interface CategoryResponse {
 const categoryService = {
     /**
      * Fetches all categories with subcategories from the API
-     * @returns Promise containing an array of Category objects
      */
     async getAllCategories(): Promise<Category[]> {
         try {

@@ -88,3 +88,29 @@ export const deleteAdminLogs = async (
 		next(error);
 	}
 };
+
+export const getAdminLogDetail = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  const transaction = await db.sequelize.transaction();
+  try {
+    const id = Number(req.params.id);
+
+    const log = await adminLogService.getAdminLogById(id, transaction);
+
+    await transaction.commit();
+    return res
+      .status(200)
+      .json(
+        new ResOk().formatResponse(
+          log,
+          'Đã tìm thấy log.',
+        ),
+      );
+  } catch (error) {
+    await transaction.rollback();
+    next(error);
+  }
+};

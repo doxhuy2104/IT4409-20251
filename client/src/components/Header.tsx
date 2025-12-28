@@ -255,13 +255,6 @@ const Header: React.FC = () => {
             {/* Logo */}
             <Link to="/" className="flex-shrink-0 transform hover:scale-105 transition-transform duration-300">
               <div className="flex items-center">
-                {/* <div className="bg-white rounded-lg p-1.5 mr-1 shadow-md">
-                  <div className="text-[#2563EB] font-bold text-lg leading-none">TT</div>
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-white font-extrabold text-xl tracking-tight">Tech<span className="text-[#10B981] font-black">Trove</span></span>
-                  <span className="text-white/70 text-[10px] -mt-1 tracking-wider font-medium">ELECTRONICS STORE</span>
-                </div> */}
                 <img src={logo} className='h-20'></img>
               </div>
             </Link>
@@ -299,48 +292,14 @@ const Header: React.FC = () => {
               {/* Search suggestions dropdown */}
               {showSuggestions && (
                 <div className="absolute top-full left-0 w-full bg-white rounded-lg shadow-xl overflow-hidden mt-2 z-50 border border-gray-100 animate-fadeDown">
-                  {/* Suggested text - "Có phải bạn muốn tìm" */}
-                  {/* <div className="p-3 text-sm text-gray-500 border-b bg-gray-50">
-                    <span className="font-medium">Có phải bạn muốn tìm</span>
-                  </div> */}
-
-                  {/* Special link for brand page - shown when searching Samsung */}
-                  {/* {searchQuery.toLowerCase().includes('samsung') && (
-                    <Link
-                      to="/thuong-hieu/samsung"
-                      className="flex items-center bg-gradient-to-r from-green-600 to-emerald-600 p-3 hover:opacity-95 transition-opacity"
-                    >
-                      <div className="bg-white rounded-full p-2 mr-2 shadow-sm">
-                        <span className="text-xs font-bold">SAMSUNG</span>
-                      </div>
-                      <span className="text-white">Chuyên trang Samsung</span>
-                      <span className="ml-auto bg-white/20 rounded-full px-2 py-0.5 text-xs text-white">Xem ngay</span>
-                    </Link>
-                  )}                   */}
-                  {/* Category suggestions */}
-                  {/* {suggestedCategories.map((category, index) => (
-                    <Link
-                      key={index}
-                      to={`/search?query=${encodeURIComponent(category)}`}
-                      className="block px-4 py-2.5 hover:bg-gray-50 text-green-600 transition-colors"
-                      onClick={() => setShowSuggestions(false)}
-                    >
-                      <div className="flex items-center">
-                        <Search size={14} className="mr-2 text-gray-400" />
-                        <span>{category}</span>
-                      </div>
-                    </Link>
-                  ))} */}
-
                   {/* Suggested products section */}
                   {suggestedProducts.length > 0 && (
-                    <div className="border-t">
-                      <h3 className="px-4 py-2.5 text-gray-500 text-sm font-medium bg-gray-50">Sản phẩm gợi ý</h3>
+                    <div>
                       {suggestedProducts.map((product) => (
                         <Link
                           key={product.id}
                           to={`/product/${product.slug}`}
-                          className="flex p-3 hover:bg-gray-50 border-b transition-colors"
+                          className="flex p-3 hover:bg-gray-50 transition-colors"
                           onClick={() => setShowSuggestions(false)}
                         >
                           <div className="w-12 h-12 flex-shrink-0 bg-gray-100 p-1 rounded-md overflow-hidden">
@@ -789,18 +748,7 @@ const Header: React.FC = () => {
                     className="flex items-center p-3 rounded-lg hover:bg-gray-100"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
-                    <div className="w-8 h-8 bg-green-50 rounded-full flex items-center justify-center mr-3">
-                      {category.icon === 'phone' && <i className="fas fa-mobile-alt text-sm text-green-600"></i>}
-                      {category.icon === 'laptop' && <i className="fas fa-laptop text-sm text-green-600"></i>}
-                      {category.icon === 'accessories' && <i className="fas fa-headphones text-sm text-green-600"></i>}
-                      {category.icon === 'watch' && <i className="fas fa-stopwatch text-sm text-green-600"></i>}
-                      {category.icon === 'clock' && <i className="fas fa-clock text-sm text-green-600"></i>}
-                      {category.icon === 'tablet' && <i className="fas fa-tablet-alt text-sm text-green-600"></i>}
-                      {category.icon === 'monitor' && <i className="fas fa-desktop text-sm text-green-600"></i>}
-                      {category.icon === 'camera' && <i className="fas fa-camera text-sm text-green-600"></i>}
-                      {category.icon === 'cctv' && <i className="fas fa-video text-sm text-green-600"></i>}
-                      {category.icon === 'printer' && <i className="fas fa-print text-sm text-green-600"></i>}
-                    </div>
+                    
                     <span className="text-sm">{category.name}</span>
                     {/* {category.hasDropdown && <ChevronDown size={16} className="ml-auto" />} */}
                   </Link>

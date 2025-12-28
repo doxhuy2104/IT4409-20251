@@ -6,26 +6,6 @@ import { priceRanges } from '../data/price';
 import { sortOptions } from '../data/sort';
 import { Product } from '../types/product';
 
-// Brand filter button component
-const BrandButton: React.FC<{ brand: string; logo: string; isActive: boolean; onClick: () => void }> = ({
-    brand,
-    logo,
-    isActive,
-    onClick
-}) => {
-    console.log('Brand button clicked:', logo);
-    return (
-        <button
-            className={`flex items-center px-3 py-2 rounded-full border transition-colors ${isActive ? 'border-green-500 bg-green-50 text-green-600' : 'border-gray-300 hover:border-green-300'
-                }`}
-            onClick={onClick}
-        >
-            {/* {logo && <img src={logo} alt={`${brand} logo`} className="h-5 w-auto mr-1" />} */}
-            {<span className="text-sm">{brand}</span>}
-        </button>
-    );
-};
-
 // Sort option component
 const SortOption: React.FC<{ label: string; isActive: boolean; onClick: () => void }> = ({
     label,
@@ -58,18 +38,14 @@ const ProductListing: React.FC<ProductListingProps> = ({
     sortOption: externalSortOption = 'name-asc',
     onSortChange
 }) => {
-    // Brand filtering state
-    const [selectedBrand, setSelectedBrand] = useState<string | null>(null);
+    
     const [selectedBrandId, setSelectedBrandId] = useState<number | null>(null);
 
-    // Internal sorting state (if not controlled from parent)
+   
     const [internalSortOption, setInternalSortOption] = useState<string>('name-asc');
     const sortOption = onSortChange ? externalSortOption : internalSortOption;
     const setSortOption = onSortChange || setInternalSortOption;
     const [visibleProducts, setVisibleProducts] = useState<number>(10);
-    const [brands, setBrands] = useState<Array<{ id: number, name: string, logo: string }>>([]);
-
-    // Products state
     const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [totalProducts, setTotalProducts] = useState<number>(0);
@@ -77,20 +53,21 @@ const ProductListing: React.FC<ProductListingProps> = ({
     const [limit] = useState<number>(10);
 
     // Fetch products based on filters
-    const fetchProducts = useCallback(async () => {
+    const fetchProducts = useCallback(async (pageOverride?: number) => {
         setLoading(true);
         try {
+            const pageToUse = pageOverride !== undefined ? pageOverride : currentPage;
             console.log('Fetching products with parameters:', {
                 categoryId,
                 brandId: selectedBrandId,
                 selectedPriceRanges,
                 selectedTypes,
-                page: currentPage,
+                page: pageToUse,
                 limit
             });
 
             const params: any = {
-                page: currentPage,
+                page: pageToUse,
                 limit,
             };
 
@@ -110,16 +87,15 @@ const ProductListing: React.FC<ProductListingProps> = ({
                 // For now, use the first selected range. In future, can combine multiple ranges
                 const selectedPriceRange = priceRanges.find(range => range.value === selectedPriceRanges[0]);
                 if (selectedPriceRange) {
+                    // Set min price (always 0 or the minimum value)
                     params.min = selectedPriceRange.min;
-                    params.max = selectedPriceRange.max;
-                    console.log('Price range:', selectedPriceRange.min, '-', selectedPriceRange.max);
+                    // Only set max if it's defined (not undefined for "over-1000" range)
+                    if (selectedPriceRange.max !== undefined) {
+                        params.max = selectedPriceRange.max;
+                    }
+                    // If max is undefined, don't send it - backend will handle it as "no upper limit"
+                    console.log('Price range:', selectedPriceRange.min, '-', selectedPriceRange.max !== undefined ? selectedPriceRange.max : 'unlimited');
                 }
-            }
-
-            // Add type filters (subcategory IDs)
-            if (selectedTypes.length > 0) {
-                // Filter by subcategory IDs - this might need API support
-                // For now, we'll filter client-side if needed
             }
 
             console.log('API Request parameters:', params);
@@ -128,7 +104,7 @@ const ProductListing: React.FC<ProductListingProps> = ({
 
             if (response && response.data) {
                 // For subsequent pages, add to existing products
-                if (currentPage > 1) {
+                if (pageToUse > 1) {
                     setProducts(prev => {
                         // Get existing product IDs
                         const existingIds = new Set(prev.map(p => p.id));
@@ -157,65 +133,33 @@ const ProductListing: React.FC<ProductListingProps> = ({
                 try {
                     const brandsData = await brandService.getBrandsByCategoryId(categoryId);
                     console.log('Fetched brands:', brandsData);
-
-                    // Map API data to the format expected by our components
-                    const formattedBrands = brandsData.map(brand => ({
-                        id: brand.id,
-                        name: brand.name,
-                        // Use logoUrl from API, if it doesn't start with http, assume it's a relative path
-                        logo: brand.logoUrl
-                    }));
-                    setBrands(formattedBrands);
                 } catch (error) {
                     console.error('Error fetching brands:', error);
-                    // Fallback to default brands if API fails
-                    setBrands([]);
                 }
-            } else {
-                // Default brands when no categoryId is provided
-                setBrands([]);
-            }
+            } 
         };
 
         fetchBrands();
-
-        // Reset products, filters and pagination when category changes
         setProducts([]);
-        setSelectedBrand(null);
         setSelectedBrandId(null);
         setCurrentPage(1);
         setVisibleProducts(10);
 
-        // Fetch products with the initial parameters
         fetchProducts();
     }, [categoryId]);  // Remove fetchProducts dependency to avoid double fetching    
 
     // Fetch products when filters change
     useEffect(() => {
         console.log('Filter changed, fetching products again');
-        if (selectedBrandId !== null || selectedPriceRanges.length > 0 || selectedTypes.length > 0) {
-            setProducts([]);
-            setCurrentPage(1);
-        }
-        fetchProducts();
+        setCurrentPage(1);
+        setProducts([]);
+        fetchProducts(1);
     }, [selectedBrandId, selectedPriceRanges, selectedTypes, fetchProducts]);
-
-    // Handle brand selection
-    const handleBrandSelect = (brandName: string, brandId: number) => {
-        if (selectedBrand === brandName) {
-            setSelectedBrand(null);
-            setSelectedBrandId(null);
-        } else {
-            setSelectedBrand(brandName);
-            setSelectedBrandId(brandId);
-        }
-    };
-
 
     // Handle "Xem thêm" button click
     const handleLoadMore = () => {
         setCurrentPage(prev => prev + 1);
-    };    // Sort products based on selected option
+    };    
     const getSortedProducts = () => {
         if (!products.length) return [];
 

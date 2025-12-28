@@ -9,7 +9,7 @@ interface RegisterData {
 }
 
 // Base URL for API calls
-const API_URL = 'https://cnweb-btl.onrender.com';
+const API_URL = 'https://cnweb-kf4r.onrender.com';
 
 const authService = {
     loginWithGoogle: (): void => {

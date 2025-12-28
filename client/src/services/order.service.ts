@@ -1,4 +1,3 @@
-// filepath: d:\User2\project\cnw\CNWEB_BTL\client\src\services\order.service.ts
 import apiClient from './api.client';
 import { Order, OrderStatus } from '../types/order';
 

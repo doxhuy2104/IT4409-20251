@@ -7,8 +7,6 @@ import apiClient from './api.client';
 const brandService = {
     /**
      * Fetches brands by category ID from the API
-     * @param categoryId - The ID of the category
-     * @returns Promise containing an array of Brand objects
      */
     async getBrandsByCategoryId(categoryId: number): Promise<Brand[]> {
         try {
@@ -22,7 +20,6 @@ const brandService = {
 
     /**
      * Fetches all brands from the API
-     * @returns Promise containing an array of Brand objects
      */
     async getAllBrands(): Promise<Brand[]> {
         try {

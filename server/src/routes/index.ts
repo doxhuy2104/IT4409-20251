@@ -1,10 +1,10 @@
 import { Router } from 'express';
 
 import authRoute from './auth.router';
-import dashboard from './dashboard.router';
-import admin from './admin.router';
-import customer from './customer.router';
-import manager from './manager.router';
+import dashboardRoute from './dashboard.router';
+import adminRoute from './admin.router';
+import customerRoute from './customer.router';
+import managerRoute from './manager.router';
 import publicRoute from './public.router';
 import product from './products.router';
 import productVariant from './product-variants.router';
@@ -14,10 +14,10 @@ import orders from './orders.router';
 const router = Router();
 
 router.use('/auth', authRoute);
-router.use('/dashboard', dashboard);
-router.use('/admin', admin);
-router.use('/customer', customer);
-router.use('/manager', manager);
+router.use('/dashboard', dashboardRoute);
+router.use('/admin', adminRoute);
+router.use('/customer', customerRoute);
+router.use('/manager', managerRoute);
 router.use('/public', publicRoute);
 router.use('/products', product);
 router.use('/product-variant', productVariant);

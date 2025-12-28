@@ -4,10 +4,10 @@ import { Trash2, ChevronLeft, Heart, X, AlertCircle } from 'lucide-react';
 import wishlistService, { WishlistItem } from '../services/wishlist.service';
 import productService from '../services/product.service';
 import { useAuth } from '../hooks/useAuth';
-import { ProductV2 } from '../types/product';
+import { Product } from '../types/product';
 
 interface EnhancedWishlistItem extends WishlistItem {
-    fullProduct?: ProductV2;
+    fullProduct?: Product;
 }
 
 const WishlistPage: React.FC = () => {
