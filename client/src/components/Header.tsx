@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { Bell, ChevronDown, Heart, LogOut, Menu, Search, ShoppingBag, ShoppingCart, Trash2, User, X } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ChevronDown, Search, ShoppingCart, User, X, Bell, Menu, LogOut, Heart, ShoppingBag, Award, Gift, Users, Trash2 } from 'lucide-react';
+import logo from '../assets/logo.png';
+import { mainCategories } from '../data/category';
 import { useAuth } from '../hooks/useAuth';
 import cartService from '../services/cart.service';
 import productService from '../services/product.service';
-import { mainCategories } from '../data/category';
-import logo from '../assets/logo.png';
 import { CartItem } from '../types/cart';
 import { createSlug } from '../utils/stringUtils';
 // suggestions type
@@ -255,6 +255,13 @@ const Header: React.FC = () => {
             {/* Logo */}
             <Link to="/" className="flex-shrink-0 transform hover:scale-105 transition-transform duration-300">
               <div className="flex items-center">
+                {/* <div className="bg-white rounded-lg p-1.5 mr-1 shadow-md">
+                  <div className="text-[#2563EB] font-bold text-lg leading-none">TT</div>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-white font-extrabold text-xl tracking-tight">Tech<span className="text-[#10B981] font-black">Trove</span></span>
+                  <span className="text-white/70 text-[10px] -mt-1 tracking-wider font-medium">ELECTRONICS STORE</span>
+                </div> */}
                 <img src={logo} className='h-20'></img>
               </div>
             </Link>
@@ -292,6 +299,39 @@ const Header: React.FC = () => {
               {/* Search suggestions dropdown */}
               {showSuggestions && (
                 <div className="absolute top-full left-0 w-full bg-white rounded-lg shadow-xl overflow-hidden mt-2 z-50 border border-gray-100 animate-fadeDown">
+                  {/* Suggested text - "Có phải bạn muốn tìm" */}
+                  {/* <div className="p-3 text-sm text-gray-500 border-b bg-gray-50">
+                    <span className="font-medium">Có phải bạn muốn tìm</span>
+                  </div> */}
+
+                  {/* Special link for brand page - shown when searching Samsung */}
+                  {/* {searchQuery.toLowerCase().includes('samsung') && (
+                    <Link
+                      to="/thuong-hieu/samsung"
+                      className="flex items-center bg-gradient-to-r from-green-600 to-emerald-600 p-3 hover:opacity-95 transition-opacity"
+                    >
+                      <div className="bg-white rounded-full p-2 mr-2 shadow-sm">
+                        <span className="text-xs font-bold">SAMSUNG</span>
+                      </div>
+                      <span className="text-white">Chuyên trang Samsung</span>
+                      <span className="ml-auto bg-white/20 rounded-full px-2 py-0.5 text-xs text-white">Xem ngay</span>
+                    </Link>
+                  )}                   */}
+                  {/* Category suggestions */}
+                  {/* {suggestedCategories.map((category, index) => (
+                    <Link
+                      key={index}
+                      to={`/search?query=${encodeURIComponent(category)}`}
+                      className="block px-4 py-2.5 hover:bg-gray-50 text-green-600 transition-colors"
+                      onClick={() => setShowSuggestions(false)}
+                    >
+                      <div className="flex items-center">
+                        <Search size={14} className="mr-2 text-gray-400" />
+                        <span>{category}</span>
+                      </div>
+                    </Link>
+                  ))} */}
+
                   {/* Suggested products section */}
                   {suggestedProducts.length > 0 && (
                     <div>
@@ -631,47 +671,7 @@ const Header: React.FC = () => {
           </div>
         </div>
 
-        {/* Main navigation */}
-        <div className="bg-[#43a32d] shadow-sm py-2">
-          <div className="max-w-7xl mx-auto">
-            <nav className="relative">
-              <ul className="flex items-center justify-center overflow-x-auto whitespace-nowrap scrollbar-hide gap-6">
-                {/* Chứng Nhận Hữu Cơ */}
-                <li className="relative group">
-                  <Link
-                    to="/chung-nhan-huu-co"
-                    className="flex items-center text-center text-white hover:opacity-90 px-4 py-2 transition-all font-medium text-sm"
-                  >
-                    <Award size={18} className="mr-2" />
-                    <span>Chứng Nhận Hữu Cơ</span>
-                  </Link>
-                </li>
 
-                {/* Hàng sỉ hữu cơ giá tốt */}
-                <li className="relative group">
-                  <Link
-                    to="/hang-si-huu-co-gia-tot"
-                    className="flex items-center text-center text-white hover:opacity-90 px-4 py-2 transition-all font-medium text-sm"
-                  >
-                    <Gift size={18} className="mr-2" />
-                    <span>Hàng sỉ hữu cơ giá tốt</span>
-                  </Link>
-                </li>
-
-                {/* Tự hào là doanh nghiệp do phụ nữ làm chủ */}
-                <li className="relative group">
-                  <Link
-                    to="/tu-hao-doanh-nghiep-phu-nu-lam-chu"
-                    className="flex items-center text-center text-white hover:opacity-90 px-4 py-2 transition-all font-medium text-sm"
-                  >
-                    <Users size={18} className="mr-2" />
-                    <span>Tự hào là doanh nghiệp do phụ nữ làm chủ</span>
-                  </Link>
-                </li>
-              </ul>
-            </nav>
-          </div>
-        </div>
       </header>
 
       {/* Mobile Menu Sidebar */}
@@ -748,7 +748,18 @@ const Header: React.FC = () => {
                     className="flex items-center p-3 rounded-lg hover:bg-gray-100"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
-                    
+                    <div className="w-8 h-8 bg-green-50 rounded-full flex items-center justify-center mr-3">
+                      {category.icon === 'phone' && <i className="fas fa-mobile-alt text-sm text-green-600"></i>}
+                      {category.icon === 'laptop' && <i className="fas fa-laptop text-sm text-green-600"></i>}
+                      {category.icon === 'accessories' && <i className="fas fa-headphones text-sm text-green-600"></i>}
+                      {category.icon === 'watch' && <i className="fas fa-stopwatch text-sm text-green-600"></i>}
+                      {category.icon === 'clock' && <i className="fas fa-clock text-sm text-green-600"></i>}
+                      {category.icon === 'tablet' && <i className="fas fa-tablet-alt text-sm text-green-600"></i>}
+                      {category.icon === 'monitor' && <i className="fas fa-desktop text-sm text-green-600"></i>}
+                      {category.icon === 'camera' && <i className="fas fa-camera text-sm text-green-600"></i>}
+                      {category.icon === 'cctv' && <i className="fas fa-video text-sm text-green-600"></i>}
+                      {category.icon === 'printer' && <i className="fas fa-print text-sm text-green-600"></i>}
+                    </div>
                     <span className="text-sm">{category.name}</span>
                     {/* {category.hasDropdown && <ChevronDown size={16} className="ml-auto" />} */}
                   </Link>

@@ -1,8 +1,22 @@
+import { useAuth } from "./AuthContext";
 import Header from "./components/Header";
-import AppRoutes from "./routers/routers";
 import Sidebar from "./components/Sidebar";
+import AppRoutes from "./routers/routers";
 
 function App() {
+  const { currentUser } = useAuth();
+
+  if (!currentUser) {
+    // Nếu đang ở trang login → chỉ render Main
+    return (
+      <div className="flex flex-col h-screen bg-gray-50">
+        <div className="flex-1 overflow-auto">
+          <AppRoutes />
+        </div>
+      </div>
+    );
+  }
+
   // Các trang khác → render Header + Sidebar + Main
   return (
     <div className="flex h-screen bg-gray-50 text-gray-900">
