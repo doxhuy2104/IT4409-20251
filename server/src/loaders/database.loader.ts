@@ -1,16 +1,17 @@
-import { Sequelize, Dialect } from 'sequelize';
+import { Dialect, Sequelize } from 'sequelize';
 import env from '../../env';
 
-import { Categories } from '../models/categories.model';
-import { Products } from '../models/products.model';
-import { Customers } from '../models/customers.model';
-import { Carts } from '../models/carts.model';
-import { CartItems } from '../models/cart-items.model';
-import { Orders } from '../models/orders.model';
-import { OrderItems } from '../models/order-items.model';
-import { Admins } from 'src/models/admins.model';
 import { AdminLogs } from 'src/models/admin-log.model';
+import { Admins } from 'src/models/admins.model';
+import { CartItems } from '../models/cart-items.model';
+import { Carts } from '../models/carts.model';
+import { Categories } from '../models/categories.model';
+import { Customers } from '../models/customers.model';
 import { Feedbacks } from '../models/feedbacks.model';
+import { OrderItems } from '../models/order-items.model';
+import { Orders } from '../models/orders.model';
+import { Products } from '../models/products.model';
+import { Revenue } from '../models/revenue.model';
 
 const dbConfig = env.database;
 
@@ -64,6 +65,8 @@ Orders.initClass(sequelize);
 OrderItems.initClass(sequelize);
 AdminLogs.initClass(sequelize);
 Feedbacks.initClass(sequelize);
+Revenue.initClass(sequelize);
+
 // 1. Categories (có thể có danh mục cha)
 Categories.belongsTo(Categories, { as: 'parent', foreignKey: 'parentId' });
 Categories.hasMany(Categories, { as: 'subCategories', foreignKey: 'parentId' });
@@ -106,5 +109,6 @@ export const db = {
 	orders: Orders,
 	orderItems: OrderItems,
 	feedbacks: Feedbacks,
+	revenue: Revenue,
 	connectToDatabase,
 };
