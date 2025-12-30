@@ -31,8 +31,8 @@ const HistoryDetail = () => {
       setLoading(true);
       setError(null);
       try {
-        const res = await api.get(`/manager/admin-log/${id}`);
-        setLog(res.data.data);
+        const res = await api.get(`/manager/admin-log?id=${id}`);
+        setLog(res.data.data[0] || null);
       } catch (err) {
         setError("Không thể tải lịch sử admin log.");
       }

@@ -84,7 +84,7 @@ const ManagerLog = () => {
   };
 
   const handleDetail = (id: number) => {
-    navigate(`/history/detail/${id}`);
+    navigate(`/logs/detail/${id}`);
   };
 
   const handleDelete = async (id: number) => {

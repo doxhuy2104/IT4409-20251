@@ -16,6 +16,7 @@ import OrderManagement from "../pages/OrderManagement";
 import ProductDetail from "../pages/ProductDetail";
 import ProductEdit from "../pages/ProductEdit";
 import ProductManagement from "../pages/ProductManagement";
+import LogDetail from "../pages/LogDetail";
 export default function AppRoutes() {
   return (
     <Routes>
@@ -26,6 +27,7 @@ export default function AppRoutes() {
         <Route path="/employees/add" element={<AddEmployee />} />
         <Route path="/employees/edit/:id" element={<EditEmployee />} />
         <Route path="/logs" element={<ManagerLog />} />
+        <Route path="/logs/detail/:id" element={<LogDetail />} />
         <Route path="/products/add" element={<AddProduct />} />
         <Route path="/products/edit/:id" element={<ProductEdit />} />
         <Route path="/products/detail/:id" element={<ProductDetail />} />
