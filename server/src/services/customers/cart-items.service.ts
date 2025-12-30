@@ -6,7 +6,13 @@ export const getCartItemById = async (
 	transaction?: Transaction,
 ) => {
 	return await db.cartItems.findByPk(cartItemId, {
-		include: [{ model: db.carts }, { model: db.productVariants }],
+		include: [
+			{ model: db.carts },
+			{
+				model: db.products,
+				include: [{ model: db.productImages }],
+			},
+		],
 		transaction,
 	});
 };
@@ -17,29 +23,29 @@ export const getCartItemsByCartId = (cartId: number) => {
 
 export const addOrUpdateCartItem = async (
 	cartId: number,
-	variantId: number,
+	productId: number,
 	quantity: number,
 	transaction?: Transaction,
 ) => {
-	const variant = await db.productVariants.findByPk(variantId, {
+	const product = await db.products.findByPk(productId, {
 		transaction,
 	});
 
-	if (!variant) throw new Error('Variant not found');
-	if (variant.stock < quantity) throw new Error('Not enough stock available');
+	if (!product) throw new Error('Product not found');
+	if ((product.stock || 0) < quantity) throw new Error('Not enough stock available');
 
 	const existingItem = await db.cartItems.findOne({
-		where: { cartId, variantId },
+		where: { cartId, productId },
 		transaction,
 	});
 
 	if (existingItem) {
 		existingItem.quantity += quantity;
-		return existingItem.save();
+		return existingItem.save({ transaction });
 	}
 
 	return db.cartItems.create(
-		{ cartId, variantId, quantity },
+		{ cartId, productId, quantity },
 		{ transaction },
 	);
 };

@@ -12,7 +12,7 @@ export class CartItems extends Model<
 > {
 	declare id: CreationOptional<number>;
 	declare cartId: number;
-	declare variantId: number;
+	declare productId: number;
 	declare quantity: number;
 	declare createdAt: CreationOptional<Date>;
 	declare updatedAt: CreationOptional<Date>;
@@ -25,7 +25,7 @@ export class CartItems extends Model<
 					autoIncrement: true,
 				},
 				cartId: { type: DataTypes.INTEGER, allowNull: false },
-				variantId: { type: DataTypes.INTEGER, allowNull: false },
+				productId: { type: DataTypes.INTEGER, allowNull: false },
 				quantity: { type: DataTypes.INTEGER, allowNull: false },
 				createdAt: DataTypes.DATE,
 				updatedAt: DataTypes.DATE,

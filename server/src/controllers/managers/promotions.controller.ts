@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
-import { ResOk } from '../../utility/response.util';
-import * as promotionService from '../../services/managers/product-promotions.service';
+import { ResOk } from '../../../utility/response.util';
+import * as promotionService from '../../services/managers/product-promotions_service';
 import { db } from '../../loaders/database.loader';
 import { Admins } from '../../models/admins.model';
-import * as adminLogService from '../../services/managers/admin-logs.service';
+import * as adminLogService from '../../services/managers/admin-log.service';
 
 // Lấy promotion (có thể lọc theo productId, promotionId)
 export const getPromotion = async (

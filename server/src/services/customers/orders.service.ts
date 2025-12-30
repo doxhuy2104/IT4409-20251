@@ -1,6 +1,6 @@
+import { Op, Transaction } from 'sequelize';
 import { db } from '../../loaders/database.loader';
 import * as ordersItemService from '../../services/customers/order-items.service';
-import { Op, Transaction } from 'sequelize';
 
 // Tao đơn hàng mới
 export const createOrderFromCart = async (
@@ -20,65 +20,49 @@ export const createOrderFromCart = async (
 
 		const cartItems = await db.cartItems.findAll({
 			where: {
-				id: itemIds, 
-				cartId, 
+				id: itemIds, // danh sách cartItems có id nằm trong itemIds
+				cartId, // đúng cartId
 			},
 			transaction,
 		});
 		if (cartItems.length === 0) throw new Error('Giỏ hàng trống');
 
-		const variantIds = cartItems.map((item) => item.variantId);
-		const variants = await db.productVariants.findAll({
-			where: { id: variantIds },
-			transaction,
-		});
-
-		const variantMap = new Map<
-			number,
-			{ price: number; discount: number }
-		>();
-		const variantStockMap = new Map<number, number>();
-
-		variants.forEach((v) => {
-			variantMap.set(v.id, {
-				price: Number(v.price),
-				discount: Number(v.discountPrice) || 0, // fallback nếu discount không có
-			});
-			variantStockMap.set(v.id, Number(v.stock));
-		});
-
-		// Kiểm tra tồn kho và lấy thông tin sản phẩm để hiển thị tên
+		const productIds = cartItems.map((item) => item.productId);
 		const products = await db.products.findAll({
-			where: { id: { [Op.in]: variants.map(v => v.productId) } },
+			where: { id: { [Op.in]: productIds } },
 			transaction,
 		});
-		const productMap = new Map<number, string>();
-		products.forEach((p) => productMap.set(p.id, p.name));
 
+		const productMap = new Map<
+			number,
+			{ price: number; stock: number; name: string }
+		>();
+
+		products.forEach((p) => {
+			productMap.set(p.id, {
+				price: Number(p.price),
+				stock: Number(p.stock || 0),
+				name: p.name,
+			});
+		});
+
+		// Kiểm tra tồn kho
 		for (const item of cartItems) {
-			const stock = variantStockMap.get(item.variantId) || 0;
-			if (stock < item.quantity) {
-				const variant = variants.find((v) => v.id === item.variantId);
-				const productName = variant
-					? productMap.get(variant.productId) || 'Sản phẩm'
-					: 'Sản phẩm';
-				const availableStock = stock;
+			const product = productMap.get(item.productId);
+			if (!product) {
+				throw new Error('Không tìm thấy sản phẩm');
+			}
+			if (product.stock < item.quantity) {
 				throw new Error(
-					`Sản phẩm "${productName}" không đủ hàng. Số lượng còn lại: ${availableStock}, số lượng bạn yêu cầu: ${item.quantity}`,
+					`Sản phẩm "${product.name}" không đủ hàng. Số lượng còn lại: ${product.stock}, số lượng bạn yêu cầu: ${item.quantity}`,
 				);
 			}
 		}
 
 		const totalAmount = cartItems.reduce((sum, item) => {
-			const variant = variantMap.get(item.variantId) || {
-				price: 0,
-				discount: 0,
-			};
-			const effectivePrice = Math.max(
-				0,
-				variant.price - variant.discount,
-			);
-			return sum + effectivePrice * item.quantity;
+			const product = productMap.get(item.productId);
+			if (!product) return sum;
+			return sum + product.price * item.quantity;
 		}, 0);
 
 		const orderData = {
@@ -90,31 +74,21 @@ export const createOrderFromCart = async (
 		const newOrder = await db.orders.create(orderData, { transaction });
 
 		const orderItemsData = cartItems.map((item) => {
-			const variant = variantMap.get(item.variantId) || {
-				price: 0,
-				discount: 0,
-			};
-			const effectivePrice = Math.max(
-				0,
-				variant.price - variant.discount,
-			);
+			const product = productMap.get(item.productId);
+			if (!product) {
+				throw new Error('Không tìm thấy sản phẩm');
+			}
 			return {
 				orderId: newOrder.id,
-				variantId: item.variantId,
+				productId: item.productId,
 				quantity: item.quantity,
-				priceAtTime: effectivePrice,
+				priceAtTime: product.price,
 			};
 		});
 
 		await ordersItemService.createOrderItem(orderItemsData, transaction);
 
-		// Trừ tồn kho
-		// for (const item of cartItems) {
-		// 	await db.productVariants.increment(
-		// 		{ stock: -item.quantity },
-		// 		{ where: { id: item.variantId }, transaction },
-		// 	);
-		// }
+		// Trừ tồn kho sẽ được thực hiện trong changeStock khi order được confirm
 
 		for (const item of cartItems) {
 			await db.cartItems.destroy({ where: { id: item.id }, transaction });
@@ -134,6 +108,72 @@ export const createOrderFromCart = async (
 	} catch (err) {
 		throw err;
 	}
+};
+
+export const confirmOrder = async (
+	id: number,
+	orderData: any,
+	transaction?: Transaction,
+) => {
+	const order = await db.orders.findByPk(id, { transaction });
+
+	if (!order) throw new Error('Không tìm thấy đơn hàng');
+	if (order.status !== 'draft') {
+		throw new Error(
+			`Bạn không thể xác nhận đơn hàng này vì trạng thái của nó là ${order.status}`,
+		);
+	}
+
+	// Validate shippingAddress không được null hoặc rỗng
+	if (!orderData.shippingAddress || orderData.shippingAddress.trim().length === 0) {
+		throw new Error('Địa chỉ giao hàng không được để trống');
+	}
+
+	const trimmedShippingAddress = orderData.shippingAddress.trim();
+
+	// Update shippingAddress in Orders table
+	await order.update(
+		{
+			shippingAddress: trimmedShippingAddress,
+			paymentMethod: orderData.paymentMethod || null,
+		},
+		{ transaction }
+	);
+
+	const shippingData = {
+		orderId: id,
+		name: orderData.name || '',
+		email: orderData.email || '',
+		phone: orderData.phone || '',
+		shippingAddress: trimmedShippingAddress,
+		shippingProvider: '',
+	};
+
+	await db.shipping.create(shippingData, { transaction });
+
+	const paymentData = {
+		orderId: id,
+		amount: (order as any)?.totalAmount,
+		paymentMethod: orderData.paymentMethod,
+	};
+
+	await db.payments.create(paymentData, { transaction });
+
+	if (orderData.paymentMethod?.toLowerCase() === 'cod') {
+		await order?.update({ status: 'pending' }, { transaction });
+		await changeStock(id, transaction);
+	}
+
+	const resOrder = await db.orders.findByPk(id, {
+		include: [
+			{ model: db.orderItems, include: [{ model: db.products, include: [{ model: db.productImages }] }] },
+			{ model: db.payments },
+			{ model: db.shipping },
+		],
+		transaction,
+	});
+
+	return resOrder;
 };
 
 export const cancelOrder = async (
@@ -158,6 +198,76 @@ export const cancelOrder = async (
 	return order;
 };
 
+// Cập nhật đơn hàng theo ID
+export const updateOrderById = async (
+	id: number,
+	orderData: any,
+	transaction?: Transaction,
+) => {
+	const allowedStatusFlow = [
+		'draft',
+		'pending',
+		'processing',
+		'shipped',
+		'delivered',
+		'cancelled',
+	];
+
+	// Lấy order hiện tại
+	const order = await db.orders.findByPk(id, { transaction });
+	if (!order) throw new Error('Order not found');
+
+	if (
+		orderData.status === 'draft' ||
+		orderData.status === 'delivered' ||
+		orderData.status === 'cancelled'
+	) {
+		throw new Error('Bạn không thể thay đổi trạng thái của đơn hàng này.');
+	}
+
+	const currentStatusIndex = allowedStatusFlow.indexOf(order.status);
+	const newStatusIndex = allowedStatusFlow.indexOf(orderData.status);
+
+	if (newStatusIndex === -1) {
+		throw new Error(`Invalid status: ${orderData.status}`);
+	}
+
+	if (newStatusIndex < currentStatusIndex) {
+		throw new Error(
+			`Cannot change status from '${order.status}' to '${orderData.status}'`,
+		);
+	}
+
+	// Chỉ cập nhật status
+	await db.orders.update(
+		{ status: orderData.status },
+		{ where: { id }, transaction },
+	);
+
+	if (orderData.status === 'delivered' && order.status !== 'delivered') {
+		await updateDailyRevenue(Number(order.totalAmount), transaction);
+		// Nếu là COD, cập nhật trạng thái thanh toán thành công
+		if (order.paymentMethod?.toLowerCase() === 'cod') {
+			await db.payments.update(
+				{ status: 'success' },
+				{ where: { orderId: id }, transaction }
+			);
+		}
+	}
+
+	await changeStock(id, transaction);
+
+	const resOrder = await db.orders.findByPk(id, {
+		include: [
+			{ model: db.orderItems, include: [{ model: db.products, include: [{ model: db.productImages }] }] },
+			{ model: db.payments },
+			{ model: db.shipping },
+		],
+		transaction,
+	});
+
+	return resOrder;
+};
 
 // Xóa đơn hàng theo ID
 export const deleteOrderById = async (
@@ -174,7 +284,7 @@ export const deleteOrderById = async (
 export const getOrders = async (filters: any, transaction?: Transaction) => {
 	const where: any = {};
 	const include: any[] = [
-		{ model: db.orderItems, include: [{ model: db.productVariants }] },
+		{ model: db.orderItems, include: [{ model: db.products, include: [{ model: db.productImages }] }] },
 		{ model: db.payments },
 		{ model: db.shipping },
 	];
@@ -201,11 +311,14 @@ export const getOrders = async (filters: any, transaction?: Transaction) => {
 	}
 
 	// Điều kiện lọc theo trạng thái đơn hàng
-	if (filters.status) {
-		where.status =
-			filters.status !== 'draft' ? filters.status : { [Op.not]: 'draft' };
-	} 
+	// Nếu status = 'all' hoặc không có, thì trả về tất cả orders bao gồm cả draft
+	// Nếu có status cụ thể, thì chỉ lọc theo status đó
+	if (filters.status && filters.status !== 'all') {
+		where.status = filters.status;
+	}
+	// Nếu không có status filter hoặc status = 'all', không thêm điều kiện lọc status
 
+	// Điều kiện lọc theo khoảng thời gian tạo đơn hàng
 	if (filters.startDate && filters.endDate) {
 		where.createdAt = {
 			[Op.between]: [
@@ -223,10 +336,12 @@ export const getOrders = async (filters: any, transaction?: Transaction) => {
 		};
 	}
 
+	// Điều kiện lọc theo phương thức thanh toán
 	if (filters.paymentMethod) {
 		where.paymentMethod = filters.paymentMethod;
 	}
 
+	// Truy vấn đơn hàng
 	const [rows, count] = await Promise.all([
 		db.orders.findAll({
 			where,
@@ -248,4 +363,138 @@ export const getOrders = async (filters: any, transaction?: Transaction) => {
 export const getOrderById = async (id: number, transaction?: Transaction) => {
 	const order = await db.orders.findByPk(id, { transaction });
 	return order;
+};
+
+export const changeStock = async (id: number, transaction?: Transaction) => {
+	const order = await db.orders.findByPk(id, {
+		include: [{ model: db.orderItems }],
+		transaction,
+	});
+	if (!order) throw new Error('Không tìm thấy đơn hàng');
+
+	if (order.status !== 'pending' && order.status !== 'cancelled') return;
+
+	const orderitems = await db.orderItems.findAll({
+		where: [
+			{
+				orderId: id,
+			},
+		],
+		transaction,
+	});
+
+	for (const item of orderitems) {
+		const product = await db.products.findByPk(item.productId, {
+			transaction,
+		});
+
+		if (!product) continue;
+
+		if (order.status === 'pending') {
+			// Trừ số lượng
+			if ((product.stock || 0) < item.quantity) {
+				throw new Error(`Sản phẩm ${product.name} không đủ hàng`);
+			}
+			await product.update(
+				{ stock: (product.stock || 0) - item.quantity },
+				{ transaction },
+			);
+		} else if (order.status === 'cancelled') {
+			// Cộng lại số lượng
+			await product.update(
+				{ stock: (product.stock || 0) + item.quantity },
+				{ transaction },
+			);
+		}
+	}
+};
+
+// Đánh dấu đơn hàng là đã nhận được (chỉ dành cho khách hàng)
+export const markOrderAsReceived = async (
+	id: number,
+	customerId: number,
+	transaction?: Transaction,
+) => {
+	const order = await db.orders.findOne({
+		where: { id, customerId },
+		include: [{ model: db.shipping }],
+		transaction,
+	});
+
+	if (!order) {
+		throw new Error('Không tìm thấy đơn hàng hoặc bạn không có quyền cập nhật đơn hàng này');
+	}
+
+	if (order.status !== 'shipped') {
+		throw new Error(`Bạn chỉ có thể đánh dấu đã nhận được hàng khi đơn hàng đang ở trạng thái "đang vận chuyển". Trạng thái hiện tại: ${order.status}`);
+	}
+
+	// Cập nhật trạng thái đơn hàng thành 'delivered'
+	await order.update({ status: 'delivered' }, { transaction });
+
+	// Cập nhật doanh thu
+	await updateDailyRevenue(Number(order.totalAmount), transaction);
+
+	// Nếu là COD, cập nhật trạng thái thanh toán thành công
+	if (order.paymentMethod?.toLowerCase() === 'cod') {
+		await db.payments.update(
+			{ status: 'success' },
+			{ where: { orderId: id }, transaction }
+		);
+	}
+
+	// Cập nhật deliveredAt trong shipping nếu có
+	const shipping = await db.shipping.findOne({
+		where: { orderId: id },
+		transaction,
+	});
+
+	if (shipping) {
+		await shipping.update(
+			{ deliveredAt: new Date() },
+			{ transaction },
+		);
+	}
+
+	// Lấy lại đơn hàng với đầy đủ thông tin
+	const updatedOrder = await db.orders.findByPk(id, {
+		include: [
+			{ model: db.orderItems, include: [{ model: db.products, include: [{ model: db.productImages }] }] },
+			{ model: db.payments },
+			{ model: db.shipping },
+		],
+		transaction,
+	});
+
+	return updatedOrder;
+};
+
+// Hàm cập nhật doanh thu theo ngày
+const updateDailyRevenue = async (amount: number, transaction?: Transaction) => {
+	const today = new Date();
+	// Tạo đối tượng Date chỉ chứa ngày/tháng/năm để tracking
+	// Lưu ý: db.revenue.findOrCreate sẽ tự handle date comparison nếu model định nghĩa là DATEONLY
+
+	// Tìm bản ghi revenue cho hôm nay
+	const [revenue, created] = await db.revenue.findOrCreate({
+		where: { date: today },
+		defaults: {
+			date: today,
+			totalRevenue: 0,
+			totalOrders: 0
+		},
+		transaction
+	});
+
+	// Cập nhật doanh thu
+	// Nếu vừa mới tạo thì giá trị ban đầu là 0, sau đó cộng thêm
+	// Nếu đã tồn tại thì cộng dồn
+
+	// Lưu ý: revenue.totalRevenue là string hoặc number tùy driver, ép kiểu cho chắc
+	const currentRevenue = Number(revenue.totalRevenue);
+
+	await revenue.update({
+		totalRevenue: currentRevenue + amount,
+		totalOrders: revenue.totalOrders + 1
+	}, { transaction });
 };

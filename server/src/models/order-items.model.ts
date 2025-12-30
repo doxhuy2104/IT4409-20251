@@ -12,7 +12,7 @@ export class OrderItems extends Model<
 > {
 	declare id: CreationOptional<number>;
 	declare orderId: number;
-	declare variantId: number;
+	declare productId: number;
 	declare quantity: number;
 	declare priceAtTime: number;
 	declare createdAt: CreationOptional<Date>;
@@ -26,7 +26,7 @@ export class OrderItems extends Model<
 					autoIncrement: true,
 				},
 				orderId: { type: DataTypes.INTEGER, allowNull: false },
-				variantId: { type: DataTypes.INTEGER, allowNull: false },
+				productId: { type: DataTypes.INTEGER, allowNull: false },
 				quantity: { type: DataTypes.INTEGER, allowNull: false },
 				priceAtTime: {
 					type: DataTypes.DECIMAL(15, 2),

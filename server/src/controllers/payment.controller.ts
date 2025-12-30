@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { db } from '../loaders/database.loader';
 import { changeStock } from '../services/customers/orders.service';
 import { CassoService } from '../services/payments/casso.service';
-import { ResOk } from '../utility/response.util';
+import { ResOk } from '../../utility/response.util';
 
 export class PaymentController {
 

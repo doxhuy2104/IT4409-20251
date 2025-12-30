@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { db } from '../../loaders/database.loader';
-import { ResOk } from '../../utility/response.util';
+import { ResOk } from '../../../utility/response.util';
 
 export const getCategories = async (
 	req: Request,

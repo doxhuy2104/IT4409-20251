@@ -1,7 +1,7 @@
 import express from 'express';
 import * as reviewService from '../controllers/customers/reviews.controller';
-import { isManager, verifyToken } from '../middleware/authenticate.middleware';
-import { authorization, RoleManager } from '../middleware/manager.middleware';
+import { isManager, verifyToken } from '../middlewares/authenticate.middleware';
+import { authorization, RoleManager } from '../middlewares/manager.middleware';
 
 const router = express.Router();
 

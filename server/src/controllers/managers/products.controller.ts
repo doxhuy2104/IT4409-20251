@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { ResOk } from '../../utility/response.util';
+import { ResOk } from '../../../utility/response.util';
 import * as productService from '../../services/managers/products.service';
 import * as productImageService from '../../services/managers/product-images.service';
 import { db } from '../../loaders/database.loader';
