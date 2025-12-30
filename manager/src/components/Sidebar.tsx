@@ -1,4 +1,5 @@
-import { FaClock } from "react-icons/fa";
+import historyIcon from "../assets/history.svg";
+import historyActiveIcon from "../assets/history_active.svg";
 import homeIcon from "../assets/home.svg";
 import homeActiveIcon from "../assets/home_active.svg";
 import logo from "../assets/logo.png";
@@ -49,8 +50,9 @@ const Sidebar = () => {
           roles: ["super_admin", "manager", "staff"],
         },
         {
-          to: "/history",
-          icon: FaClock,
+          to: "/logs",
+          icon: historyIcon,
+          activeIcon: historyActiveIcon,
           label: "Quản lí truy cập",
           roles: ["super_admin"],
         },
