@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../AuthContext";
+import logo from "../assets/logo.png";
 
 export default function Login() {
   const { login, error, currentUser } = useAuth();
@@ -36,8 +37,8 @@ export default function Login() {
       <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-2xl shadow-xl transform">
         <div className="text-center">
           <img
-            alt="The Gioi Di Dong"
-            src="/src/assets/logo.png"
+            alt="Logo"
+            src={logo}
             className="mx-auto h-16 w-auto hover:opacity-80 transition-opacity duration-300"
           />
           <h2 className="mt-6 text-3xl font-bold text-gray-900 tracking-tight">

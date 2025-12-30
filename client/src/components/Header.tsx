@@ -255,13 +255,6 @@ const Header: React.FC = () => {
             {/* Logo */}
             <Link to="/" className="flex-shrink-0 transform hover:scale-105 transition-transform duration-300">
               <div className="flex items-center">
-                {/* <div className="bg-white rounded-lg p-1.5 mr-1 shadow-md">
-                  <div className="text-[#2563EB] font-bold text-lg leading-none">TT</div>
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-white font-extrabold text-xl tracking-tight">Tech<span className="text-[#10B981] font-black">Trove</span></span>
-                  <span className="text-white/70 text-[10px] -mt-1 tracking-wider font-medium">ELECTRONICS STORE</span>
-                </div> */}
                 <img src={logo} className='h-20'></img>
               </div>
             </Link>
@@ -299,38 +292,6 @@ const Header: React.FC = () => {
               {/* Search suggestions dropdown */}
               {showSuggestions && (
                 <div className="absolute top-full left-0 w-full bg-white rounded-lg shadow-xl overflow-hidden mt-2 z-50 border border-gray-100 animate-fadeDown">
-                  {/* Suggested text - "Có phải bạn muốn tìm" */}
-                  {/* <div className="p-3 text-sm text-gray-500 border-b bg-gray-50">
-                    <span className="font-medium">Có phải bạn muốn tìm</span>
-                  </div> */}
-
-                  {/* Special link for brand page - shown when searching Samsung */}
-                  {/* {searchQuery.toLowerCase().includes('samsung') && (
-                    <Link
-                      to="/thuong-hieu/samsung"
-                      className="flex items-center bg-gradient-to-r from-green-600 to-emerald-600 p-3 hover:opacity-95 transition-opacity"
-                    >
-                      <div className="bg-white rounded-full p-2 mr-2 shadow-sm">
-                        <span className="text-xs font-bold">SAMSUNG</span>
-                      </div>
-                      <span className="text-white">Chuyên trang Samsung</span>
-                      <span className="ml-auto bg-white/20 rounded-full px-2 py-0.5 text-xs text-white">Xem ngay</span>
-                    </Link>
-                  )}                   */}
-                  {/* Category suggestions */}
-                  {/* {suggestedCategories.map((category, index) => (
-                    <Link
-                      key={index}
-                      to={`/search?query=${encodeURIComponent(category)}`}
-                      className="block px-4 py-2.5 hover:bg-gray-50 text-green-600 transition-colors"
-                      onClick={() => setShowSuggestions(false)}
-                    >
-                      <div className="flex items-center">
-                        <Search size={14} className="mr-2 text-gray-400" />
-                        <span>{category}</span>
-                      </div>
-                    </Link>
-                  ))} */}
 
                   {/* Suggested products section */}
                   {suggestedProducts.length > 0 && (
@@ -682,18 +643,10 @@ const Header: React.FC = () => {
           {/* Mobile Menu Content */}
           <div className="flex flex-col h-full">
             {/* User info section */}
-            <div className="bg-gradient-to-r from-[#2563EB] to-[#4F46E5] p-4">
+            <div className="bg-gradient-to-r from-green-600 to-green-700 p-4">
               <div className="flex items-center">
                 {/* Logo for mobile menu */}
-                <div className="flex items-center mb-4">
-                  <div className="bg-white rounded-lg p-1.5 mr-1 shadow-md">
-                    <div className="text-[#2563EB] font-bold text-lg leading-none">TT</div>
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-white font-extrabold text-xl tracking-tight">Tech<span className="text-[#10B981] font-black">Trove</span></span>
-                    <span className="text-white/70 text-[10px] -mt-1 tracking-wider font-medium">ELECTRONICS STORE</span>
-                  </div>
-                </div>
+                <Link to="/" onClick={() => setIsMobileMenuOpen(false)}><img src={logo} className='h-20'></img></Link>
               </div>
 
               {isAuthenticated ? (
