@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { ResOk } from '../../../utility/response.util';
-import * as feedbackService from '../../services/managers/feedbacks_service';
+import * as feedbackService from '../../services/managers/feedbacks.service';
 import { db } from '../../loaders/database.loader';
 import { Admins } from '../../models/admins.model';
 import * as adminLogService from '../../services/managers/admin-log.service';
