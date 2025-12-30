@@ -1,17 +1,17 @@
-import SidebarItem from "./SidebarItem";
-import { useAuth } from "./AuthContext";
 import { FaClock } from "react-icons/fa";
-import logo from "../assets/logo.png";
 import homeIcon from "../assets/home.svg";
 import homeActiveIcon from "../assets/home_active.svg";
+import logo from "../assets/logo.png";
 import orderIcon from "../assets/order.svg";
 import orderActiveIcon from "../assets/order_active.svg";
 import productIcon from "../assets/product.svg";
 import productActiveIcon from "../assets/product_active.svg";
-import usersIcon from "../assets/users.svg";
-import usersActiveIcon from "../assets/users_active.svg";
 import reviewsIcon from "../assets/reviews.svg";
 import reviewsActiveIcon from "../assets/reviews_active.svg";
+import usersIcon from "../assets/users.svg";
+import usersActiveIcon from "../assets/users_active.svg";
+import { useAuth } from "../AuthContext";
+import SidebarItem from "./SidebarItem";
 
 const Sidebar = () => {
   const { currentUser } = useAuth();
