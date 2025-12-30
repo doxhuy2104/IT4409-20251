@@ -1,15 +1,10 @@
 // src/pages/Home.tsx
 import { FC, useEffect, useState } from "react";
-import { FaUsers, FaBox, FaShoppingCart, FaUserTie, FaComment } from "react-icons/fa";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { FaBox, FaComment, FaShoppingCart, FaUsers, FaUserTie } from "react-icons/fa";
+import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import api from "../services/api";
 
-const revenueData = [
-  { name: "T1", doanhThu: 400 },
-  { name: "T2", doanhThu: 800 },
-  { name: "T3", doanhThu: 1200 },
-  { name: "T4", doanhThu: 1000 },
-];
+
 
 const Home: FC = () => {
   const [dashboard, setDashboard] = useState<any>(null);
@@ -37,6 +32,12 @@ const Home: FC = () => {
     { icon: <FaComment size={28} />, label: "Phản hồi", value: dashboard?.feedbacks ?? "-" },
   ];
 
+  const chartData = dashboard?.revenueStats?.map((item: any) => ({
+    name: new Date(item.date).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' }),
+    doanhThu: Number(item.totalRevenue),
+    orders: item.totalOrders
+  })) || [];
+
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-4 text-gray-800">
@@ -63,16 +64,22 @@ const Home: FC = () => {
             ))}
           </div>
           <div className="bg-white p-4 rounded-2xl shadow border border-gray-100">
-            <h2 className="text-lg font-semibold text-gray-700 mb-2">Doanh thu theo tháng</h2>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={revenueData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Line type="monotone" dataKey="doanhThu" stroke="#00a63e" strokeWidth={2} />
-              </LineChart>
-            </ResponsiveContainer>
+            <h2 className="text-lg font-semibold text-gray-700 mb-2">Doanh thu 7 ngày gần nhất</h2>
+            {chartData.length > 0 ? (
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={chartData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip formatter={(value) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(value))} />
+                  <Line type="monotone" dataKey="doanhThu" name="Doanh thu" stroke="#00a63e" strokeWidth={2} />
+                </LineChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="h-[300px] flex items-center justify-center text-gray-500">
+                Chưa có dữ liệu doanh thu
+              </div>
+            )}
           </div>
         </>
       )}
