@@ -2,11 +2,15 @@ import { Route, Routes } from "react-router-dom";
 import PrivateRoute from "../components/PrivateRoute";
 import AddEmployee from "../pages/AddEmployee";
 import AddProduct from "../pages/AddProduct";
+import CustomerDetail from "../pages/CustomerDetail";
+import CustomerManagement from "../pages/CustomerManagement";
 import EditEmployee from "../pages/EditEmployee";
 import EmployeeManagement from "../pages/EmployeeManagement";
+import FeedbackManagement from "../pages/FeedbackManagement";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
 import ManagerLog from "../pages/ManagerLog";
+import NotFound from "../pages/NotFound";
 import OrderDetail from "../pages/OrderDetail";
 import OrderManagement from "../pages/OrderManagement";
 import ProductDetail from "../pages/ProductDetail";
@@ -28,8 +32,11 @@ export default function AppRoutes() {
         <Route path="/products" element={<ProductManagement />} />
         <Route path="/orders" element={<OrderManagement />} />
         <Route path="/orders/detail/:id" element={<OrderDetail />} />
-
+        <Route path="/customers" element={<CustomerManagement />} />
+        <Route path="/customers/detail/:id" element={<CustomerDetail />} />
+        <Route path="/feedback" element={<FeedbackManagement />} />
       </Route>
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }
