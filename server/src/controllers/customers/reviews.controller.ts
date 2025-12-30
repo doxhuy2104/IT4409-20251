@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { ResOk } from '../../utility/response.util';
+import { ResOk } from '../../../utility/response.util';
 import * as reviewService from '../../services/customers/reviews.service';
 import { db } from '../../loaders/database.loader';
 

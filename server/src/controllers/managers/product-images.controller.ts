@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import { db } from '../../loaders/database.loader';
-import { ResOk } from '../../utility/response.util';
+import { ResOk } from '../../../utility/response.util';
 import { Admins } from '../../models/admins.model';
-import * as adminLogService from '../../services/managers/admin-logs.service';
+import * as adminLogService from '../../services/managers/admin-log.service';
 import * as imageService from '../../services/managers/product-images.service';
 
 export const uploadProductImage = async (req: Request, res: Response) => {

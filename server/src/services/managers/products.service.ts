@@ -1,6 +1,6 @@
 import { Transaction } from 'sequelize';
 import { db } from '../../loaders/database.loader';
-import { createSlug } from '../../utility/string.util';
+import { createSlug } from '../../../utility/string.util';
 
 export const createProduct = async (data: any, transaction?: Transaction) => {
 	const newProduct = await db.products.create(

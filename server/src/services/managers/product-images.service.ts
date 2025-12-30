@@ -1,7 +1,7 @@
 
 import { db } from '../../loaders/database.loader';
 import { Transaction } from 'sequelize';
-import { cloudinary } from '../../utility/cloudinary.util'; // import config cloudinary
+import { cloudinary } from 'utility/cloudinary.util'; 
 
 // Tạo nhiều ảnh sản phẩm mới (upload từ Cloudinary, files có public_id & path)
 export const createProductImages = async (

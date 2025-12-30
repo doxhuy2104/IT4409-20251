@@ -41,12 +41,18 @@ export const getProducts = async (filters: any, transaction?: Transaction) => {
 	}
 
 	// Điều kiện lọc theo khoảng giá
-	if (filters.min || filters.max) {
+	// Hỗ trợ cả priceRange object và min/max trực tiếp
+	const priceMin = filters.priceRange?.min ?? filters.min;
+	const priceMax = filters.priceRange?.max ?? filters.max;
+
+	if (priceMin !== undefined || priceMax !== undefined) {
 		where.price = {};
-		if (filters.min)
-			where.price[Op.gte] = filters.min;
-		if (filters.max)
-			where.price[Op.lte] = filters.max;
+		if (priceMin !== undefined) {
+			where.price[Op.gte] = priceMin;
+		}
+		if (priceMax !== undefined && priceMax !== Number.MAX_SAFE_INTEGER) {
+			where.price[Op.lte] = priceMax;
+		}
 	}
 
 	// Thêm mối quan hệ với bảng brands nếu cần
