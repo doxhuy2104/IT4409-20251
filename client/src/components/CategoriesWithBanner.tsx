@@ -129,63 +129,6 @@ const CategoriesWithBanner = () => {
         setCurrentSlide(index);
     };
 
-    // const getCategoryIcon = (categoryName: string) => {
-    //     const icons: { [key: string]: string } = {
-    //         'Quà Tặng Trái cây': '🎁',
-    //         'Quà Tặng Tết': '🧧',
-    //         'Trái Cây Theo Mùa': '🍎',
-    //         'Bếp 0 - Ready To Eat': '🍱',
-    //         'Rau Củ Quả': '🥬',
-    //         'Tươi Sống': '🐟',
-    //         'Bếp 0 - Ready To Cook': '🍲',
-    //         'Thực Phẩm Khô': '🥫',
-    //         'Gia Vị & Phụ Liệu': '🌶️',
-
-    //         // Trái cây
-    //         'Trái cây Việt': '🍊',
-    //         'Trái cây nhập khẩu': '🍇',
-    //         'Trái cây cắt sẵn': '🥗',
-
-    //         // Rau củ quả
-    //         'Rau ăn lá': '🥬',
-    //         'Rau củ': '🥕',
-    //         'Quả tươi': '🍅',
-    //         'Nấm tươi': '🍄',
-
-    //         // Tươi sống
-    //         'Thịt heo': '🥓',
-    //         'Thịt bò': '🥩',
-    //         'Thịt gà': '🍗',
-    //         'Hải sản': '🦐',
-    //         'Trứng': '🥚',
-
-    //         // Thực phẩm khô
-    //         'Hạt dinh dưỡng': '🌰',
-    //         'Trái cây khô': '🥜',
-    //         'Hạt ngũ cốc': '🌾',
-    //         'Bột': '🥄',
-
-    //         // Gia vị & Phụ liệu
-    //         'Gia vị': '🌶️',
-    //         'Dầu ăn': '🫒',
-    //         'Nước tương, nước mắm': '🧂',
-    //         'Đường, muối': '🧂',
-
-    //         // Ready to eat
-    //         'Cơm hộp': '🍱',
-    //         'Bánh mì': '🥖',
-    //         'Salad': '🥗',
-    //         'Đồ ăn nhanh': '🍔',
-
-    //         // Ready to cook
-    //         'Rau củ sạch': '🥬',
-    //         'Thịt ướp sẵn': '🍖',
-    //         'Cá sạch': '🐟',
-    //         'Đồ chay': '🥦'
-    //     };
-    //     return icons[categoryName] || '📦';
-    // };
-
     return (
         <section className="container mx-auto px-4 mb-4">
             <div className="flex gap-0 relative h-[400px]">
